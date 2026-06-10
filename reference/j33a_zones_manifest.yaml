@@ -1,0 +1,133 @@
+schema_version: 1
+project: J33A
+profile: GRID_WAREHOUSE
+zone_count_expected: 24
+source_pdf: J33A-MODSCAPE-INTERNALS.pdf
+schedule_title: SLAB SUMMARY SCHEDULE - VBC USE ONLY
+drawing_ref: 6226-S111
+dwg_counterpart: 6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dwg
+transcription:
+  status: complete
+  transcribed_by: codex
+  transcribed_at: '2026-06-02T06:45:25Z'
+zones:
+- label: INT-1
+  area_sqm: 0.0
+  volume_cum: 0.0
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-2
+  area_sqm: 5.135
+  volume_cum: 0.77
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-3
+  area_sqm: 4.0
+  volume_cum: 0.6
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-4
+  area_sqm: 4.0
+  volume_cum: 0.6
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-5
+  area_sqm: 4.0
+  volume_cum: 0.6
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-6
+  area_sqm: 4.0
+  volume_cum: 0.6
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-7
+  area_sqm: 5.135
+  volume_cum: 0.77
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-8
+  area_sqm: 0.0
+  volume_cum: 0.0
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-9
+  area_sqm: 3.579122
+  volume_cum: 0.54
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-10
+  area_sqm: 0.0
+  volume_cum: 0.0
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-11
+  area_sqm: 37.937003
+  volume_cum: 5.69
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-12
+  area_sqm: 71.211109
+  volume_cum: 10.68
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-13
+  area_sqm: 12.2025
+  volume_cum: 1.83
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-14
+  area_sqm: 7.4725
+  volume_cum: 1.12
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-15
+  area_sqm: 1.8625
+  volume_cum: 0.28
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-16
+  area_sqm: 2.297825
+  volume_cum: 0.34
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-17
+  area_sqm: 1520.793232
+  volume_cum: 228.12
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-18
+  area_sqm: 61.572408
+  volume_cum: 9.24
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-19
+  area_sqm: 1295.906504
+  volume_cum: 194.39
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-20
+  area_sqm: 2369.915529
+  volume_cum: 355.49
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-21
+  area_sqm: 746.337467
+  volume_cum: 111.95
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-22
+  area_sqm: 1312.928694
+  volume_cum: 196.94
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-23
+  area_sqm: 1647.534221
+  volume_cum: 247.13
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-24
+  area_sqm: 661.174999
+  volume_cum: 99.18
+  grid_ref: null
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace

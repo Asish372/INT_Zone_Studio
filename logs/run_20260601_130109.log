@@ -1,0 +1,12 @@
+2026-06-01 13:01:09,205 [INFO] __main__: DXF CAD Room Detector v1.0.0
+2026-06-01 13:01:09,233 [INFO] src.parser: Loaded DXF: room.dxf (version AC1027)
+2026-06-01 13:01:09,233 [INFO] src.extractor: Extracted 4 entities from layers ['WALL', 'S-WALL', 'BEAM']
+2026-06-01 13:01:09,233 [INFO] __main__: Configured layers (4 entities): WALL, S-WALL, BEAM
+2026-06-01 13:01:09,233 [INFO] src.extractor: Extracted 4 entities from layers ['WALL', 'S-WALL', 'BEAM']
+2026-06-01 13:01:09,234 [INFO] src.extractor: Built 4 segments (0 entities skipped)
+2026-06-01 13:01:09,234 [INFO] src.gap_handler: Gaps closed: 0
+2026-06-01 13:01:09,235 [INFO] src.detector: Polygonize produced 1 raw polygons
+2026-06-01 13:01:09,235 [INFO] src.detector: Detected 1 regions after filtering
+2026-06-01 13:01:09,236 [INFO] src.calculator: Computed 1 regions - total area 100.00 m2, total volume 15.00 m3
+2026-06-01 13:01:09,244 [INFO] src.exporter: Exported annotated DXF: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\room_annotated.dxf
+2026-06-01 13:01:09,419 [INFO] src.exporter: Exported Excel: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\room_results.xlsx

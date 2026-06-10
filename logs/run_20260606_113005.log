@@ -1,0 +1,30 @@
+2026-06-06 11:30:05,160 [INFO] __main__: DXF CAD Room Detector v1.0.0
+2026-06-06 11:30:06,364 [INFO] src.parser: Loaded DXF: S111_A.dxf (version AC1021)
+2026-06-06 11:30:06,365 [INFO] src.extractor: Extracted 0 entities from layers ['WALL', 'S-WALL', 'BEAM']
+2026-06-06 11:30:06,365 [INFO] src.extractor: Extracted 1012 entities from layers ['S-FNDN-1', 'S-BEAM-1', 'A-WALL-2', 'S-BEAM-HDLN-1', 'S-FNDN-HDLN-1', 'A-DETL-1']
+2026-06-06 11:30:06,366 [INFO] src.extractor: Extracted 1012 entities from layers ['S-FNDN-1', 'S-BEAM-1', 'A-WALL-2', 'S-BEAM-HDLN-1', 'S-FNDN-HDLN-1', 'A-DETL-1']
+2026-06-06 11:30:06,400 [INFO] src.extractor: Built 1012 segments (0 entities skipped)
+2026-06-06 11:30:06,655 [WARNING] src.gap_handler: 152 unresolved free endpoints (gap > threshold)
+2026-06-06 11:30:06,655 [INFO] src.gap_handler: Gaps closed: 9
+2026-06-06 11:30:06,690 [INFO] src.detector: Polygonize produced 384 raw polygons
+2026-06-06 11:30:07,166 [INFO] src.detector: Detected 384 regions after filtering
+2026-06-06 11:30:07,179 [INFO] src.zone_engine.grid_frame: Extracted 29 grid line segments from ['S-GRID-1', 'S-GRID-IDEN']
+2026-06-06 11:30:07,181 [INFO] src.extractor: Extracted 382 entities from layers ['S-FNDN-1']
+2026-06-06 11:30:07,185 [INFO] src.extractor: Built 382 segments (0 entities skipped)
+2026-06-06 11:30:07,300 [WARNING] src.gap_handler: 26 unresolved free endpoints (gap > threshold)
+2026-06-06 11:30:07,300 [INFO] src.gap_handler: Gaps closed: 106
+2026-06-06 11:30:07,300 [INFO] src.gap_handler: Iterative gap close pass 1: closed=106
+2026-06-06 11:30:07,443 [WARNING] src.gap_handler: 26 unresolved free endpoints (gap > threshold)
+2026-06-06 11:30:07,443 [INFO] src.gap_handler: Gaps closed: 0
+2026-06-06 11:30:07,443 [INFO] src.gap_handler: Iterative gap close pass 2: closed=0
+2026-06-06 11:30:07,443 [INFO] src.gap_handler: Iterative gap close total: 106 bridges
+2026-06-06 11:30:07,455 [INFO] src.detector: Polygonize produced 50 raw polygons
+2026-06-06 11:30:07,471 [INFO] src.zone_engine.slab_outline: Slab outline from S-FNDN-1 concave_hull (ratio=0.20, 2838.9 m²)
+2026-06-06 11:30:07,482 [INFO] src.zone_engine.bay_geometry: Grid geometry: 24 bays, 24 non-empty after clip, slab method=concave_hull
+2026-06-06 11:30:07,578 [INFO] src.zone_engine.face_assigner: Face assignment: 170 assigned, 0 orphans, 177 slivers (method=max_intersection_area)
+2026-06-06 11:30:07,595 [INFO] src.zone_engine.zone_aggregator: Aggregated 24 INT zones from 170 face assignments
+2026-06-06 11:30:07,629 [INFO] src.calculator: Computed 384 regions - total area 16348.58 m2, total volume 2452.29 m3
+2026-06-06 11:30:08,699 [INFO] src.exporter: Exported annotated DXF: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\S111_A_annotated.dxf
+2026-06-06 11:30:09,001 [INFO] src.exporter: Exported Excel: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\S111_A_results.xlsx
+2026-06-06 11:30:09,033 [INFO] src.zone_engine.int_schedule_export: Exported INT schedule Excel: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\S111_A_int_schedule.xlsx
+2026-06-06 11:30:10,044 [INFO] src.zone_engine.int_schedule_export: Exported INT zones DXF: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\S111_A_int_zones.dxf

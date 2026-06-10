@@ -1,0 +1,23 @@
+{
+  "generated": "2026-06-06T00:20:18.357934",
+  "drawings": [
+    {
+      "drawing": "6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dwg",
+      "auto_detected": 618,
+      "candidate_seeds": 0,
+      "seeds": []
+    },
+    {
+      "drawing": "S111_A.dwg",
+      "auto_detected": 387,
+      "candidate_seeds": 0,
+      "seeds": []
+    },
+    {
+      "drawing": "S111_J.dwg",
+      "auto_detected": 406,
+      "candidate_seeds": 0,
+      "seeds": []
+    }
+  ]
+}

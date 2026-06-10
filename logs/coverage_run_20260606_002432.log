@@ -1,0 +1,48 @@
+2026-06-06 00:24:32,698 [INFO] __main__: Analyzing coverage: 6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dwg
+2026-06-06 00:24:32,699 [INFO] src.converter: Using cached DXF: 6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dxf
+2026-06-06 00:24:33,213 [INFO] src.parser: Loaded DXF: 6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dxf (version AC1021)
+2026-06-06 00:24:33,215 [INFO] src.extractor: Extracted 0 entities from layers ['WALL', 'S-WALL', 'BEAM']
+2026-06-06 00:24:33,216 [INFO] src.extractor: Extracted 1524 entities from layers ['S-FNDN-1', 'S-BEAM-2', 'A-WALL-1', 'A-DETL-2', 'A-DETL-3', 'A-FLOR', 'A-DETL-1', 'A-WALL']
+2026-06-06 00:24:34,427 [WARNING] src.gap_handler: 35 unresolved free endpoints (gap > threshold)
+2026-06-06 00:24:34,427 [INFO] src.gap_handler: Gaps closed: 35
+2026-06-06 00:24:34,428 [INFO] src.gap_handler: Iterative gap close pass 1: closed=35
+2026-06-06 00:24:34,510 [WARNING] src.gap_handler: 9 unresolved free endpoints (gap > threshold)
+2026-06-06 00:24:34,510 [INFO] src.gap_handler: Gaps closed: 0
+2026-06-06 00:24:34,511 [INFO] src.gap_handler: Iterative gap close pass 2: closed=0
+2026-06-06 00:24:34,511 [INFO] src.gap_handler: Iterative gap close total: 35 bridges
+2026-06-06 00:24:34,600 [INFO] src.detector: Polygonize produced 618 raw polygons
+2026-06-06 00:24:51,629 [INFO] src.detection_coverage: Coverage 6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dwg: detected=618 missed=26 at_risk=111 categories={'layer_selection_miss': 1, 'gap_blocked_closure': 17, 'bearing_mismatch_miss': 25, 'unknown_unresolved': 22, 'unsupported_entity_miss': 72}
+2026-06-06 00:24:51,630 [INFO] __main__:   detected=618 missed=26 at_risk=111 open_after=9
+2026-06-06 00:24:51,630 [INFO] __main__: Analyzing coverage: S111_A.dwg
+2026-06-06 00:24:51,631 [INFO] src.converter: Using cached DXF: S111_A.dxf
+2026-06-06 00:24:52,524 [INFO] src.parser: Loaded DXF: S111_A.dxf (version AC1021)
+2026-06-06 00:24:52,526 [INFO] src.extractor: Extracted 0 entities from layers ['WALL', 'S-WALL', 'BEAM']
+2026-06-06 00:24:52,527 [INFO] src.extractor: Extracted 1012 entities from layers ['S-FNDN-1', 'S-BEAM-1', 'A-WALL-2', 'S-BEAM-HDLN-1', 'S-FNDN-HDLN-1', 'A-DETL-1']
+2026-06-06 00:24:53,317 [WARNING] src.gap_handler: 134 unresolved free endpoints (gap > threshold)
+2026-06-06 00:24:53,317 [INFO] src.gap_handler: Gaps closed: 18
+2026-06-06 00:24:53,318 [INFO] src.gap_handler: Iterative gap close pass 1: closed=18
+2026-06-06 00:24:53,362 [WARNING] src.gap_handler: 1 unresolved free endpoints (gap > threshold)
+2026-06-06 00:24:53,362 [INFO] src.gap_handler: Gaps closed: 0
+2026-06-06 00:24:53,362 [INFO] src.gap_handler: Iterative gap close pass 2: closed=0
+2026-06-06 00:24:53,363 [INFO] src.gap_handler: Iterative gap close total: 18 bridges
+2026-06-06 00:24:53,411 [INFO] src.detector: Polygonize produced 387 raw polygons
+2026-06-06 00:25:00,663 [INFO] src.detection_coverage: Coverage S111_A.dwg: detected=387 missed=7 at_risk=183 categories={'layer_selection_miss': 1, 'gap_blocked_closure': 70, 'bearing_mismatch_miss': 4, 'unknown_unresolved': 19, 'pairing_conflict_miss': 2, 'unsupported_entity_miss': 94}
+2026-06-06 00:25:00,664 [INFO] __main__:   detected=387 missed=7 at_risk=183 open_after=1
+2026-06-06 00:25:00,665 [INFO] __main__: Analyzing coverage: S111_J.dwg
+2026-06-06 00:25:00,665 [INFO] src.converter: Using cached DXF: S111_J.dxf
+2026-06-06 00:25:02,018 [INFO] src.parser: Loaded DXF: S111_J.dxf (version AC1021)
+2026-06-06 00:25:02,020 [INFO] src.extractor: Extracted 0 entities from layers ['WALL', 'S-WALL', 'BEAM']
+2026-06-06 00:25:02,021 [INFO] src.extractor: Extracted 1486 entities from layers ['A-DETL-THIN', 'S-FNDN-1', 'A-DETL', 'S-BEAM-1', 'A-WALL-3', 'A-DETL-3', 'A-DETL-2', 'A-DETL-1', 'A-FLOR', 'A-DETL-5', 'S-BEAM-HDLN-1']
+2026-06-06 00:25:03,602 [WARNING] src.gap_handler: 76 unresolved free endpoints (gap > threshold)
+2026-06-06 00:25:03,602 [INFO] src.gap_handler: Gaps closed: 97
+2026-06-06 00:25:03,603 [INFO] src.gap_handler: Iterative gap close pass 1: closed=97
+2026-06-06 00:25:03,686 [WARNING] src.gap_handler: 13 unresolved free endpoints (gap > threshold)
+2026-06-06 00:25:03,686 [INFO] src.gap_handler: Gaps closed: 7
+2026-06-06 00:25:03,687 [INFO] src.gap_handler: Iterative gap close pass 2: closed=7
+2026-06-06 00:25:03,756 [WARNING] src.gap_handler: 13 unresolved free endpoints (gap > threshold)
+2026-06-06 00:25:03,757 [INFO] src.gap_handler: Gaps closed: 0
+2026-06-06 00:25:03,757 [INFO] src.gap_handler: Iterative gap close pass 3: closed=0
+2026-06-06 00:25:03,757 [INFO] src.gap_handler: Iterative gap close total: 104 bridges
+2026-06-06 00:25:03,831 [INFO] src.detector: Polygonize produced 406 raw polygons
+2026-06-06 00:25:14,654 [INFO] src.detection_coverage: Coverage S111_J.dwg: detected=406 missed=70 at_risk=264 categories={'layer_selection_miss': 1, 'bearing_mismatch_miss': 44, 'gap_blocked_closure': 60, 'pairing_conflict_miss': 25, 'unknown_unresolved': 13, 'unsupported_entity_miss': 191}
+2026-06-06 00:25:14,655 [INFO] __main__:   detected=406 missed=70 at_risk=264 open_after=13

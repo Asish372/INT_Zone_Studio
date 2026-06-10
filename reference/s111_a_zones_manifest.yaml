@@ -1,0 +1,133 @@
+schema_version: 1
+project: S111_A
+profile: GRID_WAREHOUSE
+zone_count_expected: 24
+source_pdf: N/A
+schedule_title: INT schedule export baseline
+drawing_ref: 6226-S111
+dwg_counterpart: S111_A.dwg
+transcription:
+  status: complete
+  transcribed_by: codex
+  transcribed_at: '2026-06-02T06:48:41Z'
+zones:
+- label: INT-1
+  area_sqm: 2.4718
+  volume_cum: 0.3708
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-2
+  area_sqm: 4.0732
+  volume_cum: 0.611
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-3
+  area_sqm: 4.0732
+  volume_cum: 0.611
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-4
+  area_sqm: 4.0732
+  volume_cum: 0.611
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-5
+  area_sqm: 4.0732
+  volume_cum: 0.611
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-6
+  area_sqm: 4.0732
+  volume_cum: 0.611
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-7
+  area_sqm: 1.35
+  volume_cum: 0.2025
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-8
+  area_sqm: 4.0732
+  volume_cum: 0.611
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-9
+  area_sqm: 2.7
+  volume_cum: 0.405
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-10
+  area_sqm: 4.0732
+  volume_cum: 0.611
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-11
+  area_sqm: 4.0732
+  volume_cum: 0.611
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-12
+  area_sqm: 4.0732
+  volume_cum: 0.611
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-13
+  area_sqm: 13.6759
+  volume_cum: 2.0514
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-14
+  area_sqm: 26.3317
+  volume_cum: 3.9498
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-15
+  area_sqm: 499.9059
+  volume_cum: 74.9859
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-16
+  area_sqm: 42.3108
+  volume_cum: 6.3466
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-17
+  area_sqm: 4.2812
+  volume_cum: 0.6422
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-18
+  area_sqm: 0.0
+  volume_cum: 0.0
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-19
+  area_sqm: 2.535
+  volume_cum: 0.3803
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-20
+  area_sqm: 6.505
+  volume_cum: 0.9757
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-21
+  area_sqm: 2.1406
+  volume_cum: 0.3211
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-22
+  area_sqm: 6.5178
+  volume_cum: 0.9777
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-23
+  area_sqm: 1.35
+  volume_cum: 0.2025
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency
+- label: INT-24
+  area_sqm: 6.505
+  volume_cum: 0.9758
+  grid_ref: null
+  notes: Derived from local INT schedule export for S111_A delivery consistency

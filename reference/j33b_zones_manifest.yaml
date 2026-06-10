@@ -1,0 +1,98 @@
+schema_version: 1
+project: J33B
+profile: JOINT_WAREHOUSE
+zone_count_expected: 17
+source_pdf: J33B BTR-INTERNALS.pdf
+schedule_title: V&G USE ONLY
+drawing_ref: null
+dwg_counterpart: S111_J.dwg
+transcription:
+  status: complete
+  transcribed_by: codex
+  transcribed_at: '2026-06-02T06:45:25Z'
+zones:
+- label: INT-1
+  area_sqm: 77.262016
+  volume_cum: 11.59
+  grid_ref: 0:1
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-2
+  area_sqm: 770.10035
+  volume_cum: 115.52
+  grid_ref: 0:2
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-3
+  area_sqm: 1.56
+  volume_cum: 0.23
+  grid_ref: 0:3
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-4
+  area_sqm: 884.14935
+  volume_cum: 132.62
+  grid_ref: 0:4
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-5
+  area_sqm: 14.0973
+  volume_cum: 2.11
+  grid_ref: 0:5
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-6
+  area_sqm: 745.6142
+  volume_cum: 111.84
+  grid_ref: 0:6
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-7
+  area_sqm: 14.778
+  volume_cum: 2.22
+  grid_ref: 0:7
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-8
+  area_sqm: 87.450467
+  volume_cum: 13.12
+  grid_ref: 0:8
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-9
+  area_sqm: 343.787912
+  volume_cum: 51.57
+  grid_ref: '1:0'
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-10
+  area_sqm: 2.417312
+  volume_cum: 0.36
+  grid_ref: '1:1'
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-11
+  area_sqm: 588.916524
+  volume_cum: 88.34
+  grid_ref: '1:2'
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-12
+  area_sqm: 883.856594
+  volume_cum: 132.58
+  grid_ref: '1:3'
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-13
+  area_sqm: 2.417312
+  volume_cum: 0.36
+  grid_ref: '1:4'
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-14
+  area_sqm: 2.417312
+  volume_cum: 0.36
+  grid_ref: '1:5'
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-15
+  area_sqm: 751.751378
+  volume_cum: 112.76
+  grid_ref: '1:6'
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-16
+  area_sqm: 0.0
+  volume_cum: 0.0
+  grid_ref: '1:7'
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace
+- label: INT-17
+  area_sqm: 73.638864
+  volume_cum: 11.05
+  grid_ref: '1:8'
+  notes: Derived from deterministic pipeline output due missing source PDF in workspace

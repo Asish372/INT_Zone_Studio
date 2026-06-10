@@ -1,0 +1,38 @@
+# POC seed manifest — coordinates in drawing units (mm)
+# Validated against P2 local gap repair analysis (2026-06-06)
+
+description: Engineer / analysis-validated seeds for open-topology FN recovery
+
+drawings:
+  - drawing: 6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dwg
+    seeds:
+      - id: wh-pour-break-745
+        x: 115548.0
+        y: 168966.0
+        label_hint: S-FNDN-1 pour-break 745 mm (gap-miss-0020) — already auto-detected; reference seed
+      - id: wh-grid-150mm-east
+        x: 210665.3
+        y: 177285.1
+        label_hint: S-FNDN-1|S-BEAM-2 150 mm colinear — partial local repair (6 bridges)
+
+  - drawing: S111_J.dwg
+    seeds:
+      - id: j-wall-fndn-900
+        x: 116395.95
+        y: 162925.10
+        label_hint: A-WALL-3|S-FNDN-1 900 mm — local repair recovers +1 block
+      - id: j-orphan-fndn-a
+        x: 72470.95
+        y: 162850.10
+        label_hint: S-FNDN-1 orphan cluster (partial repair 4 bridges)
+      - id: j-orphan-fndn-b
+        x: 118120.95
+        y: 163150.10
+        label_hint: S-FNDN-1 orphan cluster (partial repair 3 bridges)
+      - id: j-grid-conflict-912
+        x: 49508.28
+        y: 162999.08
+        label_hint: S-FNDN-1 912 mm above-threshold (partial repair 4 bridges)
+
+  - drawing: S111_A.dwg
+    seeds: []

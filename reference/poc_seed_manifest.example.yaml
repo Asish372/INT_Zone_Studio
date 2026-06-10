@@ -1,0 +1,26 @@
+# Example seed manifest for POC — coordinates in drawing units (mm)
+# Engineer supplies one interior point per known missed pour region.
+
+description: Client POC seed manifest (example — replace coordinates from CAD pick)
+
+drawings:
+  - drawing: 6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dwg
+    seeds:
+      - id: wh-pour-break-01
+        x: 150484.6
+        y: 180947.3
+        label_hint: Warehouse pour-break cell
+      - id: wh-grid-150mm-01
+        x: 210590.3
+        y: 201630.1
+        label_hint: 150 mm grid offset bay
+
+  - drawing: S111_J.dwg
+    seeds:
+      - id: j-grid-conflict-01
+        x: 125000.0
+        y: 95000.0
+        label_hint: Foundation grid orphan cluster
+
+  - drawing: S111_A.dwg
+    seeds: []

@@ -1,0 +1,28 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+
+# Build / runtime output
+output/
+*.local
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Tauri
+desktop/studio/src-tauri/target/
+
+# Secrets
+.env
+.env.*

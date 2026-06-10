@@ -1,0 +1,109 @@
+# DXF CAD Area Detector Configuration
+
+input:
+  input_dir: ./input
+  file_pattern: "*.dxf"   # batch mode also picks up *.dwg automatically
+
+layers:
+  wall_layers:
+    - WALL
+    - S-WALL
+    - BEAM
+  ignore_layers:
+    - DIMENSIONS
+    - TEXT
+    - HATCH
+
+geometry:
+  drawing_unit: mm
+  slab_thickness: 0.15
+  gap_threshold: 500
+  snap_tolerance: 1
+  max_gap_angle: 30
+  iterative_gap_close: true   # P2.2: close → renode → re-extract before polygonize
+  iterative_max_passes: 3
+  colinear_profile_match: true   # P2.3: 150/180 mm colinear profile pre-pass
+  micro_gap_threshold: 15        # P2.3: pairing conflict resolver (mm)
+  tier2_threshold_enabled: true  # P2.5: structural 501–1000 mm recovery pass
+  tier2_gap_threshold: 1000      # P2.5: tier-2 upper bound (mm); tier-1 remains 500
+  tier2_structural_layers:
+    - S-FNDN-1
+    - S-BEAM-1
+    - S-BEAM-2
+    - A-WALL
+    - A-WALL-2
+    - A-WALL-3
+  min_area: 1.0          # used when detection_mode is standard
+
+# Accuracy & detection completeness (PRD success metrics)
+accuracy:
+  # Target: <= 0.05% deviation from AutoCAD AREA on clean drawings
+  area_tolerance_percent: 0.05
+  area_decimals: 4
+  volume_decimals: 4
+  arc_segments: 64       # higher = better match on curved boundaries (ARC entities)
+  # exhaustive: maximize recall — detect every enclosed region; small human review OK
+  # standard: apply geometry.min_area and stricter deduplication
+  detection_mode: exhaustive
+  exhaustive_min_area_m2: 0.01
+  dedupe_iou_threshold: 0.98
+
+output:
+  output_dir: ./output
+  export_dxf: true
+  export_excel: true
+  export_csv: false
+  label_prefix: Room
+  dxf_region_layer: DETECTED_REGIONS
+  dxf_label_layer: REGION_LABELS
+
+logging:
+  log_dir: ./logs
+  log_level: INFO
+
+# Seed-assisted fallback (P1 + P2 local repair)
+seed_assist:
+  enabled: true
+  seeds_file: null              # overridden by --seeds CLI
+  strategy: smallest_face       # smallest_face with P2 local_repair fallback
+  search_radius: 5000           # drawing units — local segment window
+  interior_epsilon: 1.0           # mm tolerance for seed-on-wall containment
+  dedupe_iou_threshold: 0.90    # vs auto polygons (slightly looser than global)
+  allow_duplicate_seed: false
+  min_area_m2: 0.01
+  # P2 local gap repair — only when smallest-face finds no closed face
+  local_repair_enabled: true
+  local_gap_multiplier: 2.0       # local tier-2 ceiling = gap_threshold × multiplier
+  local_repair_max_gap: 1200    # absolute cap (mm) for local threshold expansion
+  local_repair_structural_only: true   # tier-2 structural whitelist only
+  local_repair_reject_crossing: false  # relax crossing guard locally (seed-validated)
+
+# INT Zone Engine — Stage 2 (P1+); use --zones or enabled: true
+zone_engine:
+  enabled: false
+  grid_layers:
+    - S-GRID-1
+    - S-GRID-IDEN
+  grid_angle_tolerance_deg: 2.0
+  position_cluster_mm: 500.0
+  min_grid_line_length_mm: 1000.0
+  slab_outline_layer: S-FNDN-1
+  slab_min_polygon_area_m2: 100.0
+  slab_concave_hull_ratio: 0.2
+  low_coverage_pct: 25.0
+  overlap_area_m2: 0.5
+  # P3 — face assigner + zone union
+  sliver_max_m2: 1.0
+  assignment_method: max_intersection_area  # or centroid_in_cell
+  assign_orphans_to_nearest: true
+  orphan_min_intersection_m2: 0.01
+  centroid_buffer_m: 0.05
+  max_orphan_faces: 0
+  min_union_bay_coverage_pct: 5.0
+  manifest_area_tolerance_pct: 0.05
+  profile: GRID_WAREHOUSE
+  export_int_excel: true
+  export_int_dxf: true
+  dxf_int_zone_layer: INT_ZONES
+  dxf_int_label_layer: INT_LABELS
+  int_excel_sheet: INT Schedule

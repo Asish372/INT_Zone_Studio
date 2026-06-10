@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Polygon Workspace</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Welcome -->
+    <div id="welcome-screen" class="screen">
+      <aside class="welcome-nav">
+        <div class="brand">
+          <span class="brand-icon">⬡</span>
+          <span class="brand-name">Polygon Workspace</span>
+        </div>
+        <button type="button" class="nav-btn primary" id="welcome-upload-btn">Upload DXF / DWG</button>
+        <input type="file" id="welcome-file-input" accept=".dxf,.dwg,.DXF,.DWG" hidden />
+        <nav class="nav-links">
+          <button type="button" class="nav-link" disabled>Recent Files</button>
+          <button type="button" class="nav-link" disabled>Projects</button>
+          <button type="button" class="nav-link" disabled>Settings</button>
+          <button type="button" class="nav-link" disabled>Help &amp; Guide</button>
+          <button type="button" class="nav-link" disabled>About</button>
+        </nav>
+      </aside>
+      <main class="welcome-main">
+        <div class="drop-zone" id="drop-zone">
+          <div class="drop-icon">📐</div>
+          <h2>Drop your CAD file here</h2>
+          <p>Supports DXF and DWG (via ODA converter)</p>
+          <button type="button" class="btn primary" id="browse-btn">Browse Files</button>
+        </div>
+        <div class="workflow-steps">
+          <div class="step"><span>1</span> Upload DXF / DWG</div>
+          <div class="step-arrow">→</div>
+          <div class="step"><span>2</span> Auto Detect</div>
+          <div class="step-arrow">→</div>
+          <div class="step"><span>3</span> Review &amp; Edit</div>
+          <div class="step-arrow">→</div>
+          <div class="step"><span>4</span> Save / Export</div>
+        </div>
+      </main>
+      <footer class="welcome-footer">
+        <span class="status-dot ready"></span> Ready
+      </footer>
+    </div>
+
+    <!-- Workspace -->
+    <div id="workspace-screen" class="screen hidden">
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="brand-icon sm">⬡</span>
+          <span class="topbar-title">Polygon Workspace</span>
+          <span class="file-pill" id="top-filename">—</span>
+        </div>
+        <div class="stat-pills" id="stat-pills">
+          <span class="pill">Detected: <strong id="stat-detected">0</strong></span>
+          <span class="pill accent">Seed Added: <strong id="stat-seed">0</strong></span>
+          <span class="pill">Total: <strong id="stat-total">0</strong></span>
+        </div>
+        <button type="button" class="btn primary" id="top-save-btn">Save</button>
+      </header>
+
+      <div class="workspace-body">
+        <aside class="panel left-panel">
+          <section class="panel-section">
+            <h3>Tools</h3>
+            <div class="tool-list">
+              <button type="button" class="tool-btn active" data-tool="select" title="Select (S)">
+                <span class="tool-icon">↖</span> Select
+              </button>
+              <button type="button" class="tool-btn" data-tool="add" title="Add Missing (A)">
+                <span class="tool-icon add">+</span> Add Missing Polygon
+                <small>Click inside area</small>
+              </button>
+              <button type="button" class="tool-btn" data-tool="pan" title="Pan (P)">
+                <span class="tool-icon">✋</span> Pan
+              </button>
+              <button type="button" class="tool-btn" data-tool="fit" title="Fit View (F)">
+                <span class="tool-icon">⊡</span> Fit View
+              </button>
+            </div>
+          </section>
+          <section class="panel-section">
+            <h3>Layers</h3>
+            <label class="layer-toggle"><input type="checkbox" id="layer-cad" checked /> CAD Lines</label>
+            <label class="layer-toggle"><input type="checkbox" id="layer-auto" checked /> Detected Polygons</label>
+            <label class="layer-toggle"><input type="checkbox" id="layer-seed" checked /> Recovered (Seeds)</label>
+            <label class="layer-toggle"><input type="checkbox" id="layer-deleted" checked /> Deleted</label>
+          </section>
+          <section class="panel-section">
+            <h3>Legend</h3>
+            <div class="legend-item"><span class="swatch auto"></span> Auto Detected</div>
+            <div class="legend-item"><span class="swatch seed"></span> Seed Recovered</div>
+            <div class="legend-item"><span class="swatch deleted"></span> Deleted</div>
+            <div class="legend-item"><span class="swatch selected"></span> Selected</div>
+          </section>
+          <section class="panel-section instructions">
+            <h3>Instructions</h3>
+            <ol>
+              <li>Upload a DXF or DWG drawing</li>
+              <li>Review auto-detected polygons</li>
+              <li>Click inside a missed cell to recover</li>
+              <li>Save or export the corrected set</li>
+            </ol>
+          </section>
+        </aside>
+
+        <main class="canvas-panel">
+          <div class="canvas-wrap" id="canvas-wrap">
+            <canvas id="canvas"></canvas>
+            <canvas id="minimap" width="160" height="120"></canvas>
+            <div class="canvas-float-controls">
+              <button type="button" class="float-btn" id="zoom-in" title="Zoom In">+</button>
+              <button type="button" class="float-btn" id="zoom-out" title="Zoom Out">−</button>
+              <button type="button" class="float-btn" id="zoom-fit" title="Fit">⊡</button>
+            </div>
+            <div class="seed-hint hidden" id="seed-hint">Click inside the area where the polygon is missing</div>
+          </div>
+        </main>
+
+        <aside class="panel right-panel">
+          <section class="panel-section">
+            <h3>Polygon Info</h3>
+            <div id="polygon-info" class="info-card empty">
+              <p class="muted">Select a polygon or add a seed</p>
+            </div>
+          </section>
+          <section class="panel-section">
+            <h3>Recent Actions</h3>
+            <ul class="action-log" id="action-log"></ul>
+          </section>
+          <section class="panel-section">
+            <h3>Shortcuts</h3>
+            <dl class="shortcuts">
+              <dt>S</dt><dd>Select</dd>
+              <dt>A</dt><dd>Add Missing</dd>
+              <dt>P</dt><dd>Pan</dd>
+              <dt>F</dt><dd>Fit View</dd>
+              <dt>Del</dt><dd>Delete selected</dd>
+              <dt>Ctrl+S</dt><dd>Save / Export</dd>
+            </dl>
+          </section>
+        </aside>
+      </div>
+
+      <footer class="statusbar">
+        <span id="status-file">—</span>
+        <span class="status-center">Coordinate System: Model (<span id="status-units">mm</span>)</span>
+        <span id="status-coords">X: —, Y: —</span>
+      </footer>
+    </div>
+
+    <!-- Export modal -->
+    <div id="export-modal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+      <div class="modal-card">
+        <header class="modal-header">
+          <h2>Export / Save</h2>
+          <button type="button" class="modal-close" id="modal-close">×</button>
+        </header>
+        <div class="modal-body">
+          <button type="button" class="export-option" data-formats="project">
+            <strong>Save Project (.pjson)</strong>
+            <span>Re-open later with seeds and edits</span>
+          </button>
+          <button type="button" class="export-option" data-formats="dxf">
+            <strong>Export to DXF</strong>
+            <span>Closed polylines on DETECTED_REGIONS layer</span>
+          </button>
+          <button type="button" class="export-option" data-formats="json">
+            <strong>Export to JSON</strong>
+            <span>Polygon rings + metadata for processing</span>
+          </button>
+          <button type="button" class="export-option" data-formats="csv">
+            <strong>Export to CSV</strong>
+            <span>Area, perimeter, centroid per polygon</span>
+          </button>
+          <button type="button" class="export-option primary" data-formats="json,dxf,csv">
+            <strong>Export All (JSON + DXF + CSV)</strong>
+            <span>Timestamped files in output/polygon_workspace</span>
+          </button>
+        </div>
+        <footer class="modal-footer">
+          <button type="button" class="btn ghost" id="modal-cancel">Cancel</button>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

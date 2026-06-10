@@ -1,0 +1,79 @@
+{
+  "generated": "2026-06-06T00:44:00",
+  "phase": "P2 local gap repair candidate analysis",
+  "total_recoverable_gap_midpoint": 1,
+  "total_estimated_with_engineer_seeds": "4-12",
+  "drawings": [
+    {
+      "drawing": "6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dwg",
+      "auto_detected": 618,
+      "local_repair_recoverable": 0,
+      "partial_repair_clusters": 11,
+      "warehouse_745_candidates": [
+        {
+          "id": "wh-pour-break-745",
+          "x": 115548.0,
+          "y": 168966.0,
+          "gap_distance": 745.432,
+          "layers": "S-FNDN-1|S-FNDN-1",
+          "endpoint_a": [115495.276, 169335.101],
+          "endpoint_b": [115600.276, 168597.101],
+          "p2_status": "duplicate_of_auto",
+          "note": "Cell already detected as auto region #242; 745mm gap does not block detection"
+        }
+      ],
+      "s111_j_orphan_clusters": []
+    },
+    {
+      "drawing": "S111_A.dwg",
+      "auto_detected": 387,
+      "local_repair_recoverable": 0,
+      "partial_repair_clusters": 0,
+      "warehouse_745_candidates": [],
+      "s111_j_orphan_clusters": []
+    },
+    {
+      "drawing": "S111_J.dwg",
+      "auto_detected": 406,
+      "local_repair_recoverable": 1,
+      "partial_repair_clusters": 15,
+      "warehouse_745_candidates": [],
+      "s111_j_orphan_clusters": [
+        {
+          "id": "j-wall-fndn-900",
+          "x": 116395.95,
+          "y": 162925.1,
+          "gap_distance": 900.0,
+          "layers": "A-WALL-3|S-FNDN-1",
+          "repair_bridges": 3,
+          "area_m2": 3.2862,
+          "p2_status": "ok"
+        },
+        {
+          "id": "j-orphan-fndn-a",
+          "x": 72470.95,
+          "y": 162850.1,
+          "gap_status": "orphan_endpoint",
+          "repair_bridges": 4,
+          "p2_status": "no_boundary"
+        },
+        {
+          "id": "j-orphan-fndn-b",
+          "x": 118120.95,
+          "y": 163150.1,
+          "gap_status": "orphan_endpoint",
+          "repair_bridges": 3,
+          "p2_status": "no_boundary"
+        },
+        {
+          "id": "j-grid-conflict-912",
+          "x": 49508.28,
+          "y": 162999.08,
+          "gap_distance": 912.414,
+          "repair_bridges": 4,
+          "p2_status": "no_boundary"
+        }
+      ]
+    }
+  ]
+}

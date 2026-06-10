@@ -1,0 +1,25 @@
+2026-06-02 12:12:19,167 [INFO] __main__: DXF CAD Room Detector v1.0.0
+2026-06-02 12:12:19,882 [INFO] src.parser: Loaded DXF: 6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dxf (version AC1021)
+2026-06-02 12:12:19,885 [INFO] src.extractor: Extracted 0 entities from layers ['WALL', 'S-WALL', 'BEAM']
+2026-06-02 12:12:19,886 [INFO] src.extractor: Extracted 1524 entities from layers ['S-FNDN-1', 'S-BEAM-2', 'A-WALL-1', 'A-DETL-2', 'A-DETL-3', 'A-FLOR', 'A-DETL-1', 'A-WALL']
+2026-06-02 12:12:19,887 [INFO] src.extractor: Extracted 1524 entities from layers ['S-FNDN-1', 'S-BEAM-2', 'A-WALL-1', 'A-DETL-2', 'A-DETL-3', 'A-FLOR', 'A-DETL-1', 'A-WALL']
+2026-06-02 12:12:19,901 [INFO] src.extractor: Built 1524 segments (0 entities skipped)
+2026-06-02 12:12:20,443 [WARNING] src.gap_handler: 31 unresolved free endpoints (gap > threshold)
+2026-06-02 12:12:20,443 [INFO] src.gap_handler: Gaps closed: 37
+2026-06-02 12:12:20,508 [INFO] src.detector: Polygonize produced 618 raw polygons
+2026-06-02 12:12:21,624 [INFO] src.detector: Detected 618 regions after filtering
+2026-06-02 12:12:21,644 [INFO] src.zone_engine.grid_frame: Extracted 27 grid line segments from ['S-GRID-1', 'S-GRID-IDEN', 'S-GRID-2']
+2026-06-02 12:12:21,647 [INFO] src.extractor: Extracted 741 entities from layers ['S-FNDN-1']
+2026-06-02 12:12:21,677 [INFO] src.extractor: Built 741 segments (0 entities skipped)
+2026-06-02 12:12:21,847 [WARNING] src.gap_handler: 52 unresolved free endpoints (gap > threshold)
+2026-06-02 12:12:21,847 [INFO] src.gap_handler: Gaps closed: 156
+2026-06-02 12:12:21,870 [INFO] src.detector: Polygonize produced 33 raw polygons
+2026-06-02 12:12:21,900 [INFO] src.zone_engine.slab_outline: Slab outline from S-FNDN-1 concave_hull (ratio=0.20, 11065.6 m²)
+2026-06-02 12:12:21,908 [INFO] src.zone_engine.bay_geometry: Grid geometry: 24 bays, 24 non-empty after clip, slab method=concave_hull
+2026-06-02 12:12:22,038 [INFO] src.zone_engine.face_assigner: Face assignment: 247 assigned, 0 orphans, 369 slivers (method=max_intersection_area)
+2026-06-02 12:12:22,067 [INFO] src.zone_engine.zone_aggregator: Aggregated 24 INT zones from 247 face assignments
+2026-06-02 12:12:22,129 [INFO] src.calculator: Computed 618 regions - total area 10091.19 m2, total volume 1513.68 m3
+2026-06-02 12:12:22,874 [INFO] src.exporter: Exported annotated DXF: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\6276.S111-WAREHOUSE SLAB PLAN-Rev_F_annotated.dxf
+2026-06-02 12:12:23,191 [INFO] src.exporter: Exported Excel: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\6276.S111-WAREHOUSE SLAB PLAN-Rev_F_results.xlsx
+2026-06-02 12:12:23,219 [INFO] src.zone_engine.int_schedule_export: Exported INT schedule Excel: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\6276.S111-WAREHOUSE SLAB PLAN-Rev_F_int_schedule.xlsx
+2026-06-02 12:12:23,879 [INFO] src.zone_engine.int_schedule_export: Exported INT zones DXF: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\6276.S111-WAREHOUSE SLAB PLAN-Rev_F_int_zones.dxf

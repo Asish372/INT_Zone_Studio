@@ -1,0 +1,25 @@
+2026-06-02 12:10:48,641 [INFO] __main__: DXF CAD Room Detector v1.0.0
+2026-06-02 12:10:50,179 [INFO] src.parser: Loaded DXF: S111_J.dxf (version AC1021)
+2026-06-02 12:10:50,181 [INFO] src.extractor: Extracted 0 entities from layers ['WALL', 'S-WALL', 'BEAM']
+2026-06-02 12:10:50,182 [INFO] src.extractor: Extracted 1486 entities from layers ['A-DETL-THIN', 'S-FNDN-1', 'A-DETL', 'S-BEAM-1', 'A-WALL-3', 'A-DETL-3', 'A-DETL-2', 'A-DETL-1', 'A-FLOR', 'A-DETL-5', 'S-BEAM-HDLN-1']
+2026-06-02 12:10:50,184 [INFO] src.extractor: Extracted 1486 entities from layers ['A-DETL-THIN', 'S-FNDN-1', 'A-DETL', 'S-BEAM-1', 'A-WALL-3', 'A-DETL-3', 'A-DETL-2', 'A-DETL-1', 'A-FLOR', 'A-DETL-5', 'S-BEAM-HDLN-1']
+2026-06-02 12:10:50,199 [INFO] src.extractor: Built 1486 segments (0 entities skipped)
+2026-06-02 12:10:50,738 [WARNING] src.gap_handler: 50 unresolved free endpoints (gap > threshold)
+2026-06-02 12:10:50,738 [INFO] src.gap_handler: Gaps closed: 110
+2026-06-02 12:10:50,790 [INFO] src.detector: Polygonize produced 331 raw polygons
+2026-06-02 12:10:51,146 [INFO] src.detector: Detected 331 regions after filtering
+2026-06-02 12:10:51,159 [INFO] src.zone_engine.grid_frame: Extracted 13 grid line segments from ['S-GRID-1', 'S-GRID-IDEN']
+2026-06-02 12:10:51,162 [INFO] src.extractor: Extracted 310 entities from layers ['S-FNDN-1']
+2026-06-02 12:10:51,165 [INFO] src.extractor: Built 310 segments (0 entities skipped)
+2026-06-02 12:10:51,206 [WARNING] src.gap_handler: 24 unresolved free endpoints (gap > threshold)
+2026-06-02 12:10:51,206 [INFO] src.gap_handler: Gaps closed: 89
+2026-06-02 12:10:51,217 [INFO] src.detector: Polygonize produced 5 raw polygons
+2026-06-02 12:10:51,233 [INFO] src.zone_engine.slab_outline: Slab outline from S-FNDN-1 concave_hull (ratio=0.20, 5534.0 m²)
+2026-06-02 12:10:51,238 [INFO] src.zone_engine.bay_geometry: Grid geometry: 18 bays, 17 non-empty after clip, slab method=concave_hull
+2026-06-02 12:10:51,290 [INFO] src.zone_engine.face_assigner: Face assignment: 94 assigned, 0 orphans, 228 slivers (method=max_intersection_area)
+2026-06-02 12:10:51,304 [INFO] src.zone_engine.zone_aggregator: Aggregated 17 INT zones from 94 face assignments
+2026-06-02 12:10:51,343 [INFO] src.calculator: Computed 331 regions - total area 5320.03 m2, total volume 798.00 m3
+2026-06-02 12:10:52,815 [INFO] src.exporter: Exported annotated DXF: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\S111_J_annotated.dxf
+2026-06-02 12:10:53,085 [INFO] src.exporter: Exported Excel: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\S111_J_results.xlsx
+2026-06-02 12:10:53,108 [INFO] src.zone_engine.int_schedule_export: Exported INT schedule Excel: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\S111_J_int_schedule.xlsx
+2026-06-02 12:10:54,561 [INFO] src.zone_engine.int_schedule_export: Exported INT zones DXF: C:\Users\Administrator\OneDrive\Desktop\Strtup\output\S111_J_int_zones.dxf
