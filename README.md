@@ -42,7 +42,7 @@ Current line: **Pilot Evaluation Build v1** (`0.1.0-pilot.1`) — field validati
 | | |
 |---|---|
 | **Author** | [Asish Bindhani](https://www.linkedin.com/in/asish372) |
-| **Repository** | [github.com/Asish372/INT_Zone_Studio](https://github.com/Asish372/INT_Zone_Studio) |
+| **Repository** | [gitlab.com/asishpapu372-group/INT_Zone_Studio](https://gitlab.com/asishpapu372-group/INT_Zone_Studio) |
 | **Pilot scope** | [PILOT_V1.md](PILOT_V1.md) |
 
 ---

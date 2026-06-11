@@ -135,6 +135,23 @@ def _dxf_cache_dir() -> Path:
     return PROJECT_ROOT / "output" / ".dxf_cache"
 
 
+def _allowed_path_roots() -> list[Path]:
+    """Roots that user-supplied filesystem paths may resolve into."""
+    return [PROJECT_ROOT.resolve(), BUNDLE_ROOT.resolve(), Path.home().resolve()]
+
+
+def _path_within_allowed_roots(path: Path) -> bool:
+    """Reject user-supplied paths that escape the project, bundle, or home dirs."""
+    try:
+        resolved = path.expanduser().resolve()
+    except OSError:
+        return False
+    return any(
+        resolved == root or resolved.is_relative_to(root)
+        for root in _allowed_path_roots()
+    )
+
+
 def _load_config() -> dict[str, Any]:
     with _config_path().open(encoding="utf-8") as fh:
         return yaml.safe_load(fh) or {}
