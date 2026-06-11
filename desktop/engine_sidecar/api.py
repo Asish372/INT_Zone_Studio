@@ -1407,6 +1407,8 @@ async def open_folder(body: OpenFolderRequest) -> dict[str, Any]:
         folder = folder.parent
     if not folder.is_dir():
         raise HTTPException(status_code=404, detail=f"Folder not found: {folder}")
+    if not _path_within_allowed_roots(folder):
+        raise HTTPException(status_code=403, detail="Folder is outside the allowed locations")
     resolved = str(folder.resolve())
     try:
         if sys.platform == "win32":

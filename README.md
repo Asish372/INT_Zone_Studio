@@ -52,10 +52,10 @@ Current line: **Pilot Evaluation Build v1** (`0.1.0-pilot.1`) — field validati
 | Asset | Version | Platform |
 |-------|---------|----------|
 | **INT Zone Studio Standalone Setup** | `0.1.0-pilot.1` | Windows 10/11 x64 |
-| **Release notes** | [v0.1.0-pilot.1](RELEASE_NOTES_PILOT_V1.md) | — |
+| **Release notes** | [v0.1.0-pilot.1](CHANGELOG.md) | — |
 | **Changelog** | [CHANGELOG.md](CHANGELOG.md) | All versions |
 
-➡️ **[Get the latest installer from Releases](https://github.com/Asish372/INT_Zone_Studio/releases/latest)**
+➡️ **[Get the latest installer from Releases](https://gitlab.com/asishpapu372-group/INT_Zone_Studio/-/releases)**
 
 After install: Start Menu → **INT Zone Studio**. No Python or terminal required.
 
