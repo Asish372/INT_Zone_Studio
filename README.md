@@ -83,7 +83,7 @@ After install: Start Menu → **INT Zone Studio**. No Python or terminal require
 | [Installation](docs/manual/INSTALLATION.md) | System requirements, installer, first run |
 | [User Guide](docs/manual/USER_GUIDE.md) | Full pilot workflow step-by-step |
 | [FAQ & troubleshooting](docs/manual/FAQ.md) | Common issues and fixes |
-| [Release notes (v1)](RELEASE_NOTES_PILOT_V1.md) | What ships in pilot v1 |
+| [Release notes (v1)](CHANGELOG.md) | What ships in pilot v1 |
 | [Pilot program](PILOT_V1.md) | Scope, metrics, exit criteria |
 | [Contributing](CONTRIBUTING.md) | Dev setup and PR guidelines |
 
