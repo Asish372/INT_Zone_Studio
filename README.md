@@ -8,7 +8,7 @@
 
 <sub>
 
-[![Release](https://img.shields.io/github/v/release/Asish372/INT_Zone_Studio?label=Pilot%20v1&style=for-the-badge&color=0969da)](https://github.com/Asish372/INT_Zone_Studio/releases/latest)
+[![Release](https://img.shields.io/badge/Pilot%20v1-0.1.0--pilot.1-0969da?style=for-the-badge)](https://gitlab.com/asishpapu372-group/INT_Zone_Studio/-/releases)
 [![License](https://img.shields.io/badge/license-MIT-24292f?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-0078d4?style=for-the-badge&logo=windows&logoColor=white)](docs/manual/INSTALLATION.md)
 [![Python](https://img.shields.io/badge/engine-Python%203.10+-3776ab?style=for-the-badge&logo=python&logoColor=white)](CONTRIBUTING.md)
