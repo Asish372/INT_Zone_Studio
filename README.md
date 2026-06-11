@@ -15,6 +15,28 @@ INT Zone Studio helps structural engineers work through slab drawings (DXF/DWG):
 
 ---
 
+## Screenshots
+
+**Welcome screen** — import a DXF/DWG or open a saved workspace:
+
+![INT Zone Studio welcome screen](docs/images/welcome-screen.png)
+
+**Automatic detection** — slab pour cells detected on a warehouse drawing (563 partitions in this example):
+
+![INT Zone Studio workspace with polygon detection](docs/images/workspace-detection.png)
+
+**Review workflow** — polygon table, properties, and CAD viewer:
+
+![INT Zone Studio review and polygon table](docs/images/workspace-review.png)
+
+**Validation** — run validation and inspect suspected gaps:
+
+![INT Zone Studio validation view](docs/images/workspace-validation.png)
+
+*Sample drawing: warehouse slab plan (DXF). Regenerate screenshots: `python scripts/capture_readme_screenshots.py` (requires dev server + engine).*
+
+---
+
 ## Why this exists
 
 Slab audit workflows often break when detection misses cells. INT Zone Studio optimizes for **gap-to-recovery usefulness**: suspected gaps that lead an engineer to the right missing pour cell, not raw polygon counts alone.
