@@ -1,106 +1,124 @@
-# INT Zone Studio
+<div align="center">
 
-**Open-source CAD workspace for slab pour-cell polygon detection, review, and export.**
+<img src="docs/branding/logo-full.png" alt="INT Zone Studio" width="360" />
 
-INT Zone Studio helps structural engineers work through slab drawings (DXF/DWG): automatic polygon detection, suspected-gap guidance, manual recovery, project save/reopen, and delivery export — all **local**, with no cloud or telemetry.
+# **INT ZONE** STUDIO
+
+**Slab pour-cell detection · review · export — built for structural engineers**
+
+<sub>
+
+[![Release](https://img.shields.io/github/v/release/Asish372/INT_Zone_Studio?label=Pilot%20v1&style=for-the-badge&color=0969da)](https://github.com/Asish372/INT_Zone_Studio/releases/latest)
+[![License](https://img.shields.io/badge/license-MIT-24292f?style=for-the-badge)](LICENSE)
+[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-0078d4?style=for-the-badge&logo=windows&logoColor=white)](docs/manual/INSTALLATION.md)
+[![Python](https://img.shields.io/badge/engine-Python%203.10+-3776ab?style=for-the-badge&logo=python&logoColor=white)](CONTRIBUTING.md)
+
+</sub>
+
+<br />
+
+[**Download**](https://github.com/Asish372/INT_Zone_Studio/releases/latest) ·
+[**User Guide**](docs/manual/USER_GUIDE.md) ·
+[**Installation**](docs/manual/INSTALLATION.md) ·
+[**Changelog**](CHANGELOG.md) ·
+[**Report Issue**](https://github.com/Asish372/INT_Zone_Studio/issues)
+
+<br />
+
+```
+Import Drawing → Automatic Detection → Review → Recovery → Save → Reopen → Export
+```
+
+</div>
+
+---
+
+## Overview
+
+**INT Zone Studio** is a desktop CAD workspace for slab drawings (DXF/DWG). It detects enclosed pour-cell polygons, surfaces suspected gaps, supports click-to-recover missing cells, and exports a delivery package — **fully local**, no cloud, no telemetry.
+
+Current line: **Pilot Evaluation Build v1** (`0.1.0-pilot.1`) — field validation with engineers, not a commercial release.
 
 | | |
 |---|---|
-| **Latest release** | [v0.1.0-pilot.1](https://github.com/Asish372/INT_Zone_Studio/releases/tag/v0.1.0-pilot.1) — Pilot Evaluation Build v1 |
-| **License** | [MIT](LICENSE) |
 | **Author** | [Asish Bindhani](https://www.linkedin.com/in/asish372) |
-| **Platform** | Windows 10/11 x64 (desktop); CLI and web dev mode cross-platform |
+| **Repository** | [github.com/Asish372/INT_Zone_Studio](https://github.com/Asish372/INT_Zone_Studio) |
+| **Pilot scope** | [PILOT_V1.md](PILOT_V1.md) |
 
-> **Note:** v0.1.0-pilot.1 is a **pilot evaluation build** for field validation with engineers — not a production or commercial release. See [PILOT_V1.md](PILOT_V1.md).
+---
+
+## Download
+
+| Asset | Version | Platform |
+|-------|---------|----------|
+| **INT Zone Studio Standalone Setup** | `0.1.0-pilot.1` | Windows 10/11 x64 |
+| **Release notes** | [v0.1.0-pilot.1](RELEASE_NOTES_PILOT_V1.md) | — |
+| **Changelog** | [CHANGELOG.md](CHANGELOG.md) | All versions |
+
+➡️ **[Get the latest installer from Releases](https://github.com/Asish372/INT_Zone_Studio/releases/latest)**
+
+After install: Start Menu → **INT Zone Studio**. No Python or terminal required.
 
 ---
 
 ## Screenshots
 
-**Welcome screen** — import a DXF/DWG or open a saved workspace:
-
-![INT Zone Studio welcome screen](docs/images/welcome-screen.png)
-
-**Automatic detection** — slab pour cells detected on a warehouse drawing (563 partitions in this example):
-
-![INT Zone Studio workspace with polygon detection](docs/images/workspace-detection.png)
-
-**Review workflow** — polygon table, properties, and CAD viewer:
-
-![INT Zone Studio review and polygon table](docs/images/workspace-review.png)
-
-**Validation** — run validation and inspect suspected gaps:
-
-![INT Zone Studio validation view](docs/images/workspace-validation.png)
-
-*Sample drawing: warehouse slab plan (DXF). Regenerate screenshots: `python scripts/capture_readme_screenshots.py` (requires dev server + engine).*
+<table>
+<tr>
+<td width="50%"><img src="docs/images/welcome-screen.png" alt="Welcome screen"/><br/><sub>Welcome — import DXF/DWG or open saved workspace</sub></td>
+<td width="50%"><img src="docs/images/workspace-detection.png" alt="Detection view"/><br/><sub>Automatic detection on warehouse slab plan</sub></td>
+</tr>
+<tr>
+<td><img src="docs/images/workspace-review.png" alt="Review workflow"/><br/><sub>Polygon table, properties, CAD viewer</sub></td>
+<td><img src="docs/images/workspace-validation.png" alt="Validation"/><br/><sub>Validation and suspected gaps</sub></td>
+</tr>
+</table>
 
 ---
 
-## Why this exists
+## Documentation
 
-Slab audit workflows often break when detection misses cells. INT Zone Studio optimizes for **gap-to-recovery usefulness**: suspected gaps that lead an engineer to the right missing pour cell, not raw polygon counts alone.
+| Manual | Description |
+|--------|-------------|
+| [Installation](docs/manual/INSTALLATION.md) | System requirements, installer, first run |
+| [User Guide](docs/manual/USER_GUIDE.md) | Full pilot workflow step-by-step |
+| [FAQ & troubleshooting](docs/manual/FAQ.md) | Common issues and fixes |
+| [Release notes (v1)](RELEASE_NOTES_PILOT_V1.md) | What ships in pilot v1 |
+| [Pilot program](PILOT_V1.md) | Scope, metrics, exit criteria |
+| [Contributing](CONTRIBUTING.md) | Dev setup and PR guidelines |
 
-**Supported pilot workflow:**
-
-```
-Import Drawing → Automatic Detection → Review → Recovery → Save Project → Reopen Project → Export Package
-```
+Engineer session kit: [`pilot/ENGINEER_SESSION_CHECKLIST.md`](pilot/ENGINEER_SESSION_CHECKLIST.md)
 
 ---
 
 ## Features (Pilot v1)
 
-- **Import** DXF and DWG slab drawings
-- **Automatic detection** of enclosed pour-cell polygons from CAD geometry
-- **Interactive viewer** — pan, zoom, minimap, layer visibility
+- Import **DXF** and **DWG** slab drawings
+- **Automatic detection** of pour-cell polygons from CAD geometry
+- Interactive viewer — pan, zoom, minimap, layer visibility
 - **Suspected gaps** — validation-driven hints to missing regions
-- **Seed recovery** — click-to-recover missing polygons with preview
-- **Review** — approve / reject / needs-review per polygon
-- **Save & reopen** workspace projects (`.pjson`)
-- **Export** — DXF, CSV, JSON, Excel, and bundled project package
-- **CLI engine** — same detection core for batch processing and automation
+- **Seed recovery** — click-to-recover with preview
+- Review status per polygon (Approve / Reject / Needs Review)
+- Save & reopen workspace projects (`.pjson`)
+- Export — DXF, CSV, JSON, Excel, bundled project package
+- CLI engine for batch processing
 
 ---
 
-## Quick start (Windows installer)
+## Quick start (developers)
 
-1. Download **INT Zone Studio Standalone Setup** from the [latest release](https://github.com/Asish372/INT_Zone_Studio/releases/latest).
-2. Run the installer (requires Windows 10/11 x64).
-3. For **DWG** files, install the free [ODA File Converter](https://www.opendesign.com/guestfiles/oda_file_converter) when prompted, or pre-convert to DXF in AutoCAD.
-
-Portable zip builds may also be attached to releases for offline evaluation.
-
----
-
-## Development
-
-### Prerequisites
-
-- Python 3.10+
-- Node.js 18+
-- Rust toolchain (optional, for Tauri desktop builds)
-
-### Python dependencies
+**Prerequisites:** Python 3.10+, Node.js 18+, Rust (for Tauri builds)
 
 ```bash
+# Python engine
 python -m venv .venv
-.venv\Scripts\activate          # Windows
-# source .venv/bin/activate     # macOS/Linux
+.venv\Scripts\activate
 pip install -r requirements.txt
-```
-
-### Web UI + Python sidecar (recommended for contributors)
-
-**Terminal 1** — detection engine API:
-
-```bash
 python scripts/run_polygon_workspace.py
 ```
 
-**Terminal 2** — React UI:
-
 ```bash
+# UI (second terminal)
 cd desktop/studio
 npm install
 npm run dev
@@ -108,41 +126,15 @@ npm run dev
 
 Open http://localhost:1420
 
-### Tauri desktop (Windows)
-
-```bash
-cd desktop/studio
-npm install
-npm run tauri:dev
-```
-
-Build installer:
+**Desktop build:**
 
 ```bash
 cd desktop/studio
 npm run tauri:build
+powershell -File ../../scripts/stage_release_installer.ps1
 ```
 
-### CLI batch processing
-
-```bash
-# Single DXF or DWG
-python main.py input/your_drawing.dxf
-
-# Batch folder
-python main.py input/ --batch
-
-# List layers (helpful for config.yaml)
-python main.py input/drawing.dwg --list-layers
-```
-
-Outputs land in `./output/` (annotated DXF, Excel, logs). Tune behavior in [`config.yaml`](config.yaml).
-
-### Tests
-
-```bash
-pytest tests/ -v
-```
+**Tests:** `pytest tests/ -v`
 
 ---
 
@@ -161,74 +153,63 @@ pytest tests/ -v
                          │
 ┌────────────────────────▼────────────────────────────────┐
 │  src/ + zone_engine — polygonize, gap close, seeds      │
-│  ezdxf · shapely · networkx                             │
 └─────────────────────────────────────────────────────────┘
 ```
 
 | Path | Role |
 |------|------|
-| [`desktop/studio/`](desktop/studio/) | React + Tauri desktop shell |
-| [`desktop/engine_sidecar/`](desktop/engine_sidecar/) | Studio detection & workspace API |
+| [`desktop/studio/`](desktop/studio/) | React + Tauri shell |
+| [`desktop/engine_sidecar/`](desktop/engine_sidecar/) | Detection & workspace API |
 | [`src/`](src/) | Core DXF parsing, detection, export |
-| [`scripts/`](scripts/) | CLI runners, validation, packaging |
-| [`tests/`](tests/) | pytest suite |
-| [`docs/images/`](docs/images/) | README screenshots |
+| [`scripts/`](scripts/) | CLI, packaging, release staging |
+| [`docs/branding/`](docs/branding/) | Logo and social assets |
 
 ---
 
 ## Configuration
 
-Edit [`config.yaml`](config.yaml) for layer names, gap threshold, slab thickness, units, and accuracy modes. Key settings:
+Edit [`config.yaml`](config.yaml) for layer names, gap threshold, slab thickness, and units.
 
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `geometry.gap_threshold` | 500 | Max gap to auto-close (drawing units) |
 | `geometry.slab_thickness` | 0.15 | Slab thickness (metres) |
-| `geometry.drawing_unit` | mm | Drawing units: `mm`, `cm`, `m` |
 | `layers.wall_layers` | WALL, S-WALL, BEAM | Layers to extract |
 
 ---
 
 ## Pilot feedback
 
-If you are evaluating this build with real drawings:
+Evaluating this build? Use:
 
-- Use [`pilot_metrics_template.csv`](pilot_metrics_template.csv) for per-drawing metrics
-- Copy [`PILOT_FEEDBACK.md`](PILOT_FEEDBACK.md) for qualitative notes
-- Open a [GitHub Issue](https://github.com/Asish372/INT_Zone_Studio/issues) with sanitized examples
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines during the pilot phase.
+- [`pilot_metrics_template.csv`](pilot_metrics_template.csv) — per-drawing metrics
+- [`PILOT_FEEDBACK.md`](PILOT_FEEDBACK.md) — qualitative notes
+- [GitHub Issues](https://github.com/Asish372/INT_Zone_Studio/issues) — bugs with sanitized drawings
 
 ---
 
 ## Known limitations (v0.1.0-pilot.1)
 
-| Area | Limitation |
-|------|------------|
+| Area | Note |
+|------|------|
 | Save workspace | Full path entry — no browse dialog in pilot v1 |
-| Re-run detection | Refreshes session view; does not re-import CAD from disk |
+| Re-run detection | Refreshes session view; does not re-import CAD |
 | Recent projects | Use Open Project |
-| AI / cloud | Not included — local-only |
-| DWG | Requires ODA File Converter or manual DXF export |
-
-Pilot scope and exit criteria: [PILOT_V1.md](PILOT_V1.md)
+| AI / cloud | Not included — local only |
 
 ---
 
-## Third-party notice
+## Third-party
 
-- **DWG conversion** uses the [ODA File Converter](https://www.opendesign.com/guestfiles/oda_file_converter) (separate download; subject to ODA terms).
-- CAD parsing via [ezdxf](https://github.com/mozman/ezdxf); geometry via [Shapely](https://github.com/shapely/shapely).
-
----
-
-## Author
-
-**Asish Bindhani**  
-[LinkedIn](https://www.linkedin.com/in/asish372) · [GitHub @Asish372](https://github.com/Asish372)
+- DWG conversion may use [ODA File Converter](https://www.opendesign.com/guestfiles/oda_file_converter) (ODA terms apply)
+- CAD: [ezdxf](https://github.com/mozman/ezdxf) · Geometry: [Shapely](https://github.com/shapely/shapely)
 
 ---
 
-## License
+<div align="center">
 
-MIT © 2026 Asish Bindhani. See [LICENSE](LICENSE).
+**Asish Bindhani** · [LinkedIn](https://www.linkedin.com/in/asish372) · [GitHub](https://github.com/Asish372)
+
+MIT © 2026 Asish Bindhani
+
+</div>
