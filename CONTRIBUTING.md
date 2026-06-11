@@ -21,9 +21,13 @@ The `pilot-v1` / `v0.1.0-pilot.1` line is in **pilot validation mode**. The prio
 
 Please read [PILOT_V1.md](PILOT_V1.md) before proposing workflow changes.
 
+## Documentation
+
+User-facing manuals live in [`docs/manual/`](docs/manual/README.md). Update these when pilot workflow or install steps change.
+
 ## Development setup
 
-See the [README](README.md#development) for Python, Node, and Tauri setup.
+See the [README](README.md#quick-start-developers) for Python, Node, and Tauri setup.
 
 ## Running tests
 
