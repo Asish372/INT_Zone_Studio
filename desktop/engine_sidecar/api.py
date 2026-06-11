@@ -262,9 +262,19 @@ def _resolve_seed(session: WorkspaceSession, x: float, y: float):
 
 
 app = FastAPI(title="INT Zone Studio Engine", version="0.3.0")
+
+# Only the Tauri shell and the Vite dev server may call this local API.
+# A wildcard here would let any website drive the engine from the browser.
+ALLOWED_ORIGINS = [
+    "tauri://localhost",
+    "https://tauri.localhost",
+    "http://tauri.localhost",
+    "http://localhost:1420",
+    "http://127.0.0.1:1420",
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

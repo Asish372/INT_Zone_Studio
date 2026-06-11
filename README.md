@@ -17,11 +17,11 @@
 
 <br />
 
-[**Download**](https://github.com/Asish372/INT_Zone_Studio/releases/latest) ·
+[**Download**](https://gitlab.com/asishpapu372-group/INT_Zone_Studio/-/releases) ·
 [**User Guide**](docs/manual/USER_GUIDE.md) ·
 [**Installation**](docs/manual/INSTALLATION.md) ·
 [**Changelog**](CHANGELOG.md) ·
-[**Report Issue**](https://github.com/Asish372/INT_Zone_Studio/issues)
+[**Report Issue**](https://gitlab.com/asishpapu372-group/INT_Zone_Studio/-/issues/new)
 
 <br />
 
