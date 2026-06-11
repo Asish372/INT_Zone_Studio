@@ -184,7 +184,7 @@ Evaluating this build? Use:
 
 - [`pilot_metrics_template.csv`](pilot_metrics_template.csv) — per-drawing metrics
 - [`PILOT_FEEDBACK.md`](PILOT_FEEDBACK.md) — qualitative notes
-- [GitHub Issues](https://github.com/Asish372/INT_Zone_Studio/issues) — bugs with sanitized drawings
+- [GitLab Issues](https://gitlab.com/asishpapu372-group/INT_Zone_Studio/-/issues) — bugs with sanitized drawings
 
 ---
 

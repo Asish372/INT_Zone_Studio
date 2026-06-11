@@ -1318,6 +1318,11 @@ async def save_workspace_state_endpoint(
     save_path = Path(body.path.strip())
     if save_path.suffix.lower() not in {".pjson", ".json"}:
         save_path = save_path.with_suffix(".pjson")
+    if not _path_within_allowed_roots(save_path):
+        raise HTTPException(
+            status_code=403,
+            detail="Save path is outside the allowed locations",
+        )
     payload = build_workspace_payload(
         polygons=session.polygons,
         source_file=session.source_file,
