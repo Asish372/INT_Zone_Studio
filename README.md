@@ -11,7 +11,7 @@ INT Zone Studio helps structural engineers work through slab drawings (DXF/DWG):
 | **Author** | [Asish Bindhani](https://www.linkedin.com/in/asish372) |
 | **Platform** | Windows 10/11 x64 (desktop); CLI and web dev mode cross-platform |
 
-> **Note:** v0.1.0-pilot.1 is a **pilot evaluation build** for field validation with engineers — not a production or commercial release. See [PILOT_V1.md](PILOT_V1.md) and [RELEASE_NOTES_PILOT_V1.md](RELEASE_NOTES_PILOT_V1.md).
+> **Note:** v0.1.0-pilot.1 is a **pilot evaluation build** for field validation with engineers — not a production or commercial release. See [PILOT_V1.md](PILOT_V1.md).
 
 ---
 
@@ -172,9 +172,7 @@ pytest tests/ -v
 | [`src/`](src/) | Core DXF parsing, detection, export |
 | [`scripts/`](scripts/) | CLI runners, validation, packaging |
 | [`tests/`](tests/) | pytest suite |
-| [`docs/`](docs/) | Research notes and V2 roadmap |
-
-Deeper design: [ARCHITECTURE_DESKTOP_APPLICATION.md](ARCHITECTURE_DESKTOP_APPLICATION.md)
+| [`docs/images/`](docs/images/) | README screenshots |
 
 ---
 
@@ -213,7 +211,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines during the pi
 | AI / cloud | Not included — local-only |
 | DWG | Requires ODA File Converter or manual DXF export |
 
-Full list: [RELEASE_NOTES_PILOT_V1.md](RELEASE_NOTES_PILOT_V1.md)
+Pilot scope and exit criteria: [PILOT_V1.md](PILOT_V1.md)
 
 ---
 
