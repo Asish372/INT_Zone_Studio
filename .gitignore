@@ -40,5 +40,15 @@ release/*.exe
 release/*.zip
 release/INT-Zone-Studio-Pilot-v1/
 
-# Local logs and sample drawing cache
-logs/
+# Local logs and sample drawings (never commit)
+logs/*
+!logs/.gitkeep
+input/*.dwg
+input/*.dxf
+coverage_metrics.xlsx
+gap_report.xlsx
+
+# Internal docs — keep locally only, not in public repo
+docs/research/
+pilot/
+desktop/studio/README.md
