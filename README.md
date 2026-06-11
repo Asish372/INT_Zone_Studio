@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/branding/logo-full.png" alt="INT Zone Studio" width="360" />
+<img src="docs/branding/logo-full.png" alt="INT Zone Studio" width="340" />
 
 # **INT ZONE** STUDIO
 
