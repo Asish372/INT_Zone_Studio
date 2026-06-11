@@ -16,4 +16,13 @@ export const CANVAS_COLORS = {
   minimapBg: "#141418",
   minimapCad: "rgba(220, 220, 230, 0.5)",
   minimapPoly: "rgba(6, 182, 212, 0.55)",
+  scopeBoundary: "#1565c0",
+  scopeBoundaryFill: "rgba(21, 101, 192, 0.08)",
+  polylineDraw: "#60a5fa",
+  polylineDrawFill: "rgba(96, 165, 250, 0.1)",
+  polygonObstacle: "#f97316",
+  polygonObstacleFill: "rgba(249, 115, 22, 0.12)",
+  polygonManual: "#a78bfa",
+  polygonManualFill: "rgba(167, 139, 250, 0.1)",
+  polylineManualDraw: "#a78bfa",
 } as const;

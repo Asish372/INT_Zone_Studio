@@ -17,6 +17,7 @@ from desktop.engine_sidecar.workspace_save import (
     load_workspace_state,
     save_workspace_state,
 )
+from desktop.engine_sidecar.workspace_scope import empty_scope
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 WAREHOUSE_DXF = PROJECT_ROOT / "output" / ".dxf_cache" / "6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dxf"
@@ -146,6 +147,7 @@ def test_workspace_file_is_valid_json_snapshot():
         save_workspace_state(payload, path)
         raw = json.loads(path.read_text(encoding="utf-8"))
     assert raw["format"] == "polygon_workspace_project"
-    assert raw["version"] == 2
+    assert raw["version"] == 3
+    assert raw["scope"] == empty_scope()
     assert len(raw["polygons"]) == 3
     assert raw["comments"]["1"][0]["text"] == "x"

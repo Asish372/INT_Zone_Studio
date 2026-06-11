@@ -9,7 +9,6 @@ import { CommandPalette } from "../shell/CommandPalette";
 import { GoToModal } from "../shell/GoToModal";
 import { MenuBar } from "../shell/MenuBar";
 import { RibbonBar } from "../shell/RibbonBar";
-import { StatusFooter } from "../shell/StatusFooter";
 import { StudioToast } from "../shell/StudioToast";
 import { ExportModal } from "../shell/ExportModal";
 import { ExportSuccessPanel } from "../shell/ExportSuccessPanel";
@@ -17,6 +16,8 @@ import { LayerManagerModal } from "../shell/LayerManagerModal";
 import { ReviewModePanel } from "../shell/ReviewModePanel";
 import { ReviewOnlyBanner } from "../shell/ReviewOnlyBanner";
 import { SaveWorkspaceModal } from "../shell/SaveWorkspaceModal";
+import { EngineErrorBar } from "../shell/EngineErrorBar";
+import { StatPills } from "../shell/StatPills";
 import { ResizableWorkspace } from "./ResizableWorkspace";
 
 function dispatchFitView() {
@@ -33,8 +34,8 @@ export function WorkspaceScreen() {
   const importAcceptRef = useRef<string>(".dxf,.dwg,.DXF,.DWG");
 
   const sourceFile = useWorkspaceStore((s) => s.sourceFile);
+  const activeMenuTab = useWorkspaceStore((s) => s.activeMenuTab);
   const sessionId = useWorkspaceStore((s) => s.sessionId);
-  const engineError = useWorkspaceStore((s) => s.engineError);
   const workspaceSavePath = useWorkspaceStore((s) => s.workspaceSavePath);
   const setExportOpen = useWorkspaceStore((s) => s.setExportOpen);
   const setSettingsOpen = useWorkspaceStore((s) => s.setSettingsOpen);
@@ -180,21 +181,14 @@ export function WorkspaceScreen() {
 
       <MenuBar onExecute={onExecute} />
       <RibbonBar onExecute={onExecute} />
+      {activeMenuTab === "Detection" && <StatPills />}
       <ReviewOnlyBanner />
       <ReviewModePanel />
 
-      {engineError && (
-        <div className="engine-error-bar">
-          {engineError}
-          <button type="button" className="ml-2 underline" onClick={() => setEngineError(null)}>
-            dismiss
-          </button>
-        </div>
-      )}
+      <EngineErrorBar />
 
       <ResizableWorkspace />
 
-      <StatusFooter />
       <StudioToast />
 
       <input

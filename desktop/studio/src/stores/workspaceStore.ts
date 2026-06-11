@@ -1,6 +1,11 @@
 import { create } from "zustand";
+import {
+  createPolylineDraw,
+  type PolylineDrawState,
+} from "../viewer/polylineDraw";
 import type {
   ActionEntry,
+  CadBoundaryCandidate,
   CanvasOverlays,
   Comment,
   Counts,
@@ -16,6 +21,7 @@ import type {
   ProjectMeta,
   SceneData,
   SeedPreview,
+  SlabBoundary,
   ToolName,
   UserRole,
   ValidationResult,
@@ -32,15 +38,24 @@ const DEFAULT_PANELS: PanelVisibility = {
   minimap: true,
 };
 
+const DEFAULT_LAYERS: LayerVisibility = {
+  cad: true,
+  zones: true,
+  faces: true,
+  obstacles: false,
+  boundary: true,
+  labels: true,
+};
+
 const DEFAULT_OVERLAYS: CanvasOverlays = {
   grid: false,
   coordinates: true,
   scaleBar: false,
   northArrow: false,
-  polygonIdMode: "off",
+  polygonIdMode: "visible",
   areas: false,
   vertices: false,
-  labels: false,
+  labels: true,
 };
 
 const LAYOUT_PRESETS: Record<WorkspaceLayoutName, PanelVisibility> = {
@@ -100,6 +115,7 @@ interface WorkspaceState {
   polygonSearch: string;
   validation: ValidationResult | null;
   zones: IntZone[];
+  selectedZone: string | null;
   reviewMode: boolean;
   comparisonOverlay: boolean;
   expectedPolygonCount: number | null;
@@ -124,6 +140,26 @@ interface WorkspaceState {
   saveWorkspaceAs: boolean;
   exportSuccessOpen: boolean;
   lastExportResult: ExportResult | null;
+  scopeEnabled: boolean;
+  polylineDraw: PolylineDrawState | null;
+  boundaryPreview: SlabBoundary | null;
+  boundaryCadCandidates: CadBoundaryCandidate[];
+  boundaryPickHover: CadBoundaryCandidate | null;
+  boundaryEditRing: [number, number][] | null;
+  boundarySnapKind: "endpoint" | "intersection" | "boundary_vertex" | null;
+  manualPolygonPreview: SeedPreview | null;
+  setScopeEnabled: (enabled: boolean) => void;
+  setPolylineDraw: (state: PolylineDrawState | null) => void;
+  setBoundaryPreview: (preview: SlabBoundary | null) => void;
+  setBoundaryCadCandidates: (candidates: CadBoundaryCandidate[]) => void;
+  setBoundaryPickHover: (candidate: CadBoundaryCandidate | null) => void;
+  setBoundaryEditRing: (ring: [number, number][] | null) => void;
+  setBoundarySnapKind: (
+    kind: "endpoint" | "intersection" | "boundary_vertex" | null,
+  ) => void;
+  setManualPolygonPreview: (preview: SeedPreview | null) => void;
+  clearScopeDraw: () => void;
+  clearManualDraw: () => void;
   setWorkspaceSavePath: (path: string | null) => void;
   setCadAvailable: (available: boolean) => void;
   setSaveWorkspaceOpen: (open: boolean, asMode?: boolean) => void;
@@ -155,6 +191,7 @@ interface WorkspaceState {
   setPolygonSearch: (s: string) => void;
   setValidation: (v: ValidationResult | null) => void;
   setZones: (z: IntZone[]) => void;
+  setSelectedZone: (label: string | null) => void;
   setReviewMode: (on: boolean) => void;
   setComparisonOverlay: (on: boolean) => void;
   setExpectedPolygonCount: (n: number | null) => void;
@@ -180,7 +217,9 @@ interface WorkspaceState {
 const defaultCounts: Counts = {
   detected: 0,
   seed_added: 0,
+  manual_added: 0,
   deleted: 0,
+  obstacles: 0,
   total: 0,
 };
 
@@ -197,7 +236,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   selectedPolygon: null,
   hoverId: null,
   tool: "select",
-  layers: { cad: true, auto: true, seed: true, deleted: true, labels: false },
+  layers: { ...DEFAULT_LAYERS },
   coords: { x: 0, y: 0 },
   seedPreview: null,
   seedClick: null,
@@ -210,6 +249,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   polygonSearch: "",
   validation: null,
   zones: [],
+  selectedZone: null,
   reviewMode: false,
   comparisonOverlay: false,
   expectedPolygonCount: null,
@@ -234,6 +274,32 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   saveWorkspaceAs: false,
   exportSuccessOpen: false,
   lastExportResult: null,
+  scopeEnabled: false,
+  polylineDraw: null,
+  boundaryPreview: null,
+  boundaryCadCandidates: [],
+  boundaryPickHover: null,
+  boundaryEditRing: null,
+  boundarySnapKind: null,
+  manualPolygonPreview: null,
+  setScopeEnabled: (scopeEnabled) => set({ scopeEnabled }),
+  setPolylineDraw: (polylineDraw) => set({ polylineDraw }),
+  setBoundaryPreview: (boundaryPreview) => set({ boundaryPreview }),
+  setBoundaryCadCandidates: (boundaryCadCandidates) => set({ boundaryCadCandidates }),
+  setBoundaryPickHover: (boundaryPickHover) => set({ boundaryPickHover }),
+  setBoundaryEditRing: (boundaryEditRing) => set({ boundaryEditRing }),
+  setBoundarySnapKind: (boundarySnapKind) => set({ boundarySnapKind }),
+  setManualPolygonPreview: (manualPolygonPreview) => set({ manualPolygonPreview }),
+  clearScopeDraw: () =>
+    set({
+      polylineDraw: null,
+      boundaryPreview: null,
+      boundaryPickHover: null,
+      boundaryEditRing: null,
+      boundarySnapKind: null,
+    }),
+  clearManualDraw: () =>
+    set({ polylineDraw: null, manualPolygonPreview: null }),
   setWorkspaceSavePath: (workspaceSavePath) => set({ workspaceSavePath }),
   setCadAvailable: (cadAvailable) => set({ cadAvailable }),
   setSaveWorkspaceOpen: (saveWorkspaceOpen, asMode = false) =>
@@ -261,11 +327,28 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
     }),
   setHoverId: (hoverId) => set({ hoverId }),
   setTool: (tool) =>
-    set((s) => ({
-      tool,
-      seedPreview: tool === "add" ? s.seedPreview : null,
-      seedClick: tool === "add" ? s.seedClick : null,
-    })),
+    set((s) => {
+      const keepBoundaryState =
+        tool === "select" ||
+        tool === "scope-draw" ||
+        tool === "scope-pick" ||
+        tool === "scope-auto" ||
+        tool === "scope-edit";
+      return {
+        tool,
+        seedPreview: tool === "add" ? s.seedPreview : null,
+        seedClick: tool === "add" ? s.seedClick : null,
+        polylineDraw:
+          tool === "scope-draw" || tool === "manual-draw"
+            ? s.polylineDraw ?? createPolylineDraw()
+            : null,
+        boundaryPreview: keepBoundaryState ? s.boundaryPreview : null,
+        boundaryPickHover: tool === "scope-pick" ? s.boundaryPickHover : null,
+        boundaryEditRing: tool === "scope-edit" ? s.boundaryEditRing : null,
+        boundarySnapKind: null,
+        manualPolygonPreview: tool === "manual-draw" ? s.manualPolygonPreview : null,
+      };
+    }),
   setLayers: (partial) =>
     set((s) => {
       const layers = { ...s.layers, ...partial };
@@ -296,6 +379,7 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
   setPolygonSearch: (polygonSearch) => set({ polygonSearch }),
   setValidation: (validation) => set({ validation }),
   setZones: (zones) => set({ zones }),
+  setSelectedZone: (selectedZone) => set({ selectedZone }),
   setReviewMode: (reviewMode) => set({ reviewMode }),
   setComparisonOverlay: (comparisonOverlay) => set({ comparisonOverlay }),
   setExpectedPolygonCount: (expectedPolygonCount) =>
@@ -399,6 +483,13 @@ export const useWorkspaceStore = create<WorkspaceState>((set) => ({
       hoverId: null,
       seedPreview: null,
       seedClick: null,
+      polylineDraw: null,
+      boundaryPreview: null,
+      boundaryCadCandidates: [],
+      boundaryPickHover: null,
+      boundaryEditRing: null,
+      boundarySnapKind: null,
+      manualPolygonPreview: null,
       validation: null,
       zones: [],
       markups: [],

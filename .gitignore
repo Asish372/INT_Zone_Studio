@@ -22,7 +22,23 @@ output/
 
 # Tauri
 desktop/studio/src-tauri/target/
+build/pyinstaller-engine/
+desktop/studio/src-tauri/resources/dist/
+desktop/studio/src-tauri/resources/engine/
+desktop/studio/src-tauri/resources/oda/
 
 # Secrets
 .env
 .env.*
+
+# ODA File Converter (download separately; not redistributable in repo)
+build/oda_download/
+build/oda_extract/
+
+# Release binaries — attach to GitHub Releases, do not commit
+release/*.exe
+release/*.zip
+release/INT-Zone-Studio-Pilot-v1/
+
+# Local logs and sample drawing cache
+logs/

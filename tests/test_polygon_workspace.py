@@ -77,9 +77,18 @@ def test_session_counts():
         {"id": 1, "source": "auto", "status": "active"},
         {"id": 2, "source": "seed", "status": "active"},
         {"id": 3, "source": "auto", "status": "deleted"},
+        {"id": 4, "source": "auto", "status": "active", "scope_excluded": True},
     ]
     counts = session.counts()
-    assert counts == {"detected": 1, "seed_added": 1, "deleted": 1, "total": 2}
+    assert counts == {
+        "detected": 1,
+        "seed_added": 1,
+        "manual_added": 0,
+        "deleted": 1,
+        "scope_excluded": 1,
+        "obstacles": 0,
+        "total": 2,
+    }
 
 
 def test_polygon_record_metrics():

@@ -1,2 +1,12 @@
-description: Centroid seeds for raw faces not present in auto-detected output
-drawings: []
+description: Auto-discovered seed candidates from gap diagnostics (POC validation)
+drawings:
+- drawing: S111_J.dwg
+  seeds:
+  - id: auto-034
+    x: 116395.955
+    y: 162925.1
+    label_hint: gap-above_threshold_close
+  - id: auto-036
+    x: 116495.955
+    y: 162925.1
+    label_hint: gap-large_gap_manual_review

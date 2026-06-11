@@ -1,5 +1,24 @@
 import type { Bounds, PolygonIdMode, PolygonRecord, SceneData } from "../types";
 
+/** Visible workspace polygon: not deleted and not scope-excluded. */
+export function isVisibleWorkspacePolygon(poly: PolygonRecord): boolean {
+  return poly.status !== "deleted" && !poly.scope_excluded;
+}
+
+/** Partition polygon: visible and not classified as column obstacle. */
+export function isPartitionPolygon(poly: PolygonRecord): boolean {
+  return isVisibleWorkspacePolygon(poly) && poly.geometry_role !== "obstacle";
+}
+
+/** @deprecated Use isPartitionPolygon for counts/selection; obstacles remain visible. */
+export function isActiveWorkspacePolygon(poly: PolygonRecord): boolean {
+  return isPartitionPolygon(poly);
+}
+
+export function isObstaclePolygon(poly: PolygonRecord): boolean {
+  return isVisibleWorkspacePolygon(poly) && poly.geometry_role === "obstacle";
+}
+
 export function computeBounds(scene: SceneData): Bounds {
   let minX = Infinity,
     minY = Infinity,
@@ -20,6 +39,7 @@ export function computeBounds(scene: SceneData): Bounds {
   for (const poly of scene.polygons ?? []) {
     for (const [x, y] of poly.ring ?? []) consider(x, y);
   }
+  for (const [x, y] of scene.scope_boundary?.ring ?? []) consider(x, y);
 
   if (!isFinite(minX)) return { minX: 0, minY: 0, maxX: 1000, maxY: 1000 };
 
@@ -99,7 +119,7 @@ export function findPolygonAt(
   let best: PolygonRecord | null = null;
   let bestArea = Infinity;
   for (const poly of polygons) {
-    if (poly.status === "deleted") continue;
+    if (!isActiveWorkspacePolygon(poly)) continue;
     const ring = poly.ring;
     if (!ring || ring.length < 3) continue;
     if (!pointInRing(wx, wy, ring)) continue;
@@ -125,7 +145,7 @@ export function findPolygonsInRect(
   const hiY = Math.max(minY, maxY);
   const hits: PolygonRecord[] = [];
   for (const poly of polygons) {
-    if (poly.status === "deleted") continue;
+    if (!isActiveWorkspacePolygon(poly)) continue;
     const ring = poly.ring;
     if (!ring?.length) continue;
     const cx = ring.reduce((s, p) => s + p[0], 0) / ring.length;
@@ -159,7 +179,7 @@ export function polygonScreenBBox(
 
 export function computeAreaThreshold(polygons: PolygonRecord[]): number {
   const areas = polygons
-    .filter((p) => p.status !== "deleted")
+    .filter(isActiveWorkspacePolygon)
     .map((p) => p.area_m2 ?? 0)
     .sort((a, b) => b - a);
   if (areas.length === 0) return 0;
@@ -262,7 +282,7 @@ export function layoutPolygonLabels(
   const occupied: { x: number; y: number; r: number }[] = [];
 
   const sorted = [...polygons]
-    .filter((p) => p.status !== "deleted")
+    .filter(isActiveWorkspacePolygon)
     .sort((a, b) => {
       const aSel = selectedSet.has(a.id) ? 1 : 0;
       const bSel = selectedSet.has(b.id) ? 1 : 0;
@@ -360,15 +380,16 @@ export function filterPolygons(
   search: string,
 ): PolygonRecord[] {
   let list = [...polygons];
-  if (filter === "auto") list = list.filter((p) => p.source === "auto" && p.status !== "deleted");
-  else if (filter === "recovered") list = list.filter((p) => p.source === "seed" && p.status !== "deleted");
+  if (filter === "auto") list = list.filter((p) => p.source === "auto" && isActiveWorkspacePolygon(p));
+  else if (filter === "recovered") list = list.filter((p) => p.source === "seed" && isActiveWorkspacePolygon(p));
+  else if (filter === "manual") list = list.filter((p) => p.source === "manual" && isActiveWorkspacePolygon(p));
   else if (filter === "deleted") list = list.filter((p) => p.status === "deleted");
-  else if (filter === "large") list = list.filter((p) => p.status !== "deleted" && (p.area_m2 ?? 0) > 100);
-  else if (filter === "small") list = list.filter((p) => p.status !== "deleted" && (p.area_m2 ?? 0) < 5);
-  else if (filter === "approved") list = list.filter((p) => p.review_status === "approved");
-  else if (filter === "pending") list = list.filter((p) => (p.review_status ?? "pending") === "pending");
-  else if (filter === "rejected") list = list.filter((p) => p.review_status === "rejected");
-  else list = list.filter((p) => p.status !== "deleted");
+  else if (filter === "large") list = list.filter((p) => isActiveWorkspacePolygon(p) && (p.area_m2 ?? 0) > 100);
+  else if (filter === "small") list = list.filter((p) => isActiveWorkspacePolygon(p) && (p.area_m2 ?? 0) < 5);
+  else if (filter === "approved") list = list.filter((p) => p.review_status === "approved" && isActiveWorkspacePolygon(p));
+  else if (filter === "pending") list = list.filter((p) => (p.review_status ?? "pending") === "pending" && isActiveWorkspacePolygon(p));
+  else if (filter === "rejected") list = list.filter((p) => p.review_status === "rejected" && isActiveWorkspacePolygon(p));
+  else list = list.filter(isActiveWorkspacePolygon);
 
   if (search.trim()) {
     const q = search.trim().toLowerCase();

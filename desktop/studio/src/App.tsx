@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { ensureSession, waitForEngine } from "./api/engine";
+import {
+  ensureSession,
+  fetchScopeConfig,
+  readEngineStartupError,
+  waitForEngine,
+} from "./api/engine";
 import { ThemeProvider } from "./hooks/useTheme";
 import { refreshScene, useStudioCommands } from "./hooks/useStudioCommands";
 import { useStudioKeyboard } from "./hooks/useStudioKeyboard";
@@ -32,9 +37,21 @@ function AppContent() {
   useEffect(() => {
     void (async () => {
       try {
+        const startupErr = await readEngineStartupError();
+        if (startupErr) {
+          setEngineError(startupErr);
+          setReady(true);
+          return;
+        }
         await waitForEngine();
         const id = await ensureSession();
         setSessionId(id);
+        try {
+          const scopeCfg = await fetchScopeConfig();
+          useWorkspaceStore.getState().setScopeEnabled(scopeCfg.enabled);
+        } catch {
+          useWorkspaceStore.getState().setScopeEnabled(false);
+        }
         setReady(true);
       } catch (e) {
         setEngineError(e instanceof Error ? e.message : "Engine unavailable");

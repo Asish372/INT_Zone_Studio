@@ -94,7 +94,11 @@ export function PropertiesPanel() {
   }
 
   const srcLabel =
-    selectedPolygon.source === "seed" ? "Recovered" : "Auto";
+    selectedPolygon.source === "seed"
+      ? "Recovered"
+      : selectedPolygon.source === "manual"
+        ? "Manual"
+        : "Auto";
   const polyComments = comments[selectedPolygon.id] ?? [];
 
   return (
@@ -105,7 +109,15 @@ export function PropertiesPanel() {
       <div className="space-y-2 p-3">
         <div className="info-row">
           <span className="label">Source</span>
-          <span className={selectedPolygon.source === "seed" ? "text-[var(--polygon-seed)]" : ""}>
+          <span
+            className={
+              selectedPolygon.source === "seed"
+                ? "text-[var(--polygon-seed)]"
+                : selectedPolygon.source === "manual"
+                  ? "text-violet-400"
+                  : ""
+            }
+          >
             {srcLabel}
           </span>
         </div>

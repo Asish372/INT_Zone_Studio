@@ -1,8 +1,11 @@
 import { useCallback } from "react";
 import {
+  applyScopeBoundary,
+  autoDetectScopeBoundary,
   createProject,
   deletePolygon,
   exportWorkspace,
+  fetchBoundaryCadCandidates,
   fetchScene,
   generateZones,
   redo,
@@ -12,9 +15,12 @@ import {
   saveWorkspace,
   undo,
 } from "../api/engine";
+import { exportPilotFeedbackTemplate } from "../lib/exportPilotFeedback";
+import { clearPanelLayouts } from "../lib/panelLayout";
 import { useTheme } from "./useTheme";
 import { useWorkspaceStore } from "../stores/workspaceStore";
-import type { StudioCommandId } from "../types";
+import type { PolygonRecord, StudioCommandId } from "../types";
+import { isActiveWorkspacePolygon } from "../viewer/geometry";
 
 export interface StudioCommandHandlers {
   onOpenProject: () => void;
@@ -22,8 +28,39 @@ export interface StudioCommandHandlers {
   onRefresh: () => Promise<void>;
 }
 
-function hasManualEdits(counts: { seed_added: number; deleted: number }): boolean {
-  return counts.seed_added > 0 || counts.deleted > 0;
+function hasManualEdits(counts: {
+  seed_added: number;
+  manual_added?: number;
+  deleted: number;
+}): boolean {
+  return (
+    counts.seed_added > 0 ||
+    (counts.manual_added ?? 0) > 0 ||
+    counts.deleted > 0
+  );
+}
+
+function hasReviewedPolygons(polygons: PolygonRecord[] | undefined): boolean {
+  if (!polygons?.length) return false;
+  return polygons.some(
+    (p) =>
+      isActiveWorkspacePolygon(p) &&
+      !!p.review_status &&
+      p.review_status !== "pending",
+  );
+}
+
+function needsApplyBoundaryConfirm(
+  counts: { seed_added: number; deleted: number },
+  polygons: PolygonRecord[] | undefined,
+): boolean {
+  return hasManualEdits(counts) || hasReviewedPolygons(polygons);
+}
+
+function confirmApplyBoundary(): boolean {
+  return window.confirm(
+    "Apply Boundary will rerun detection inside the slab boundary and replace current detection results. Recoveries, deletions, and review statuses may be lost. Continue?",
+  );
 }
 
 function confirmRedetect(): boolean {
@@ -136,6 +173,7 @@ export function useStudioCommands(handlers: StudioCommandHandlers) {
             const data = await undo(s.sessionId);
             s.setScene(data.scene);
             s.setCounts(data.counts);
+            s.clearScopeDraw();
             logAction("Undo", "info");
           } catch (e) {
             s.setEngineError(e instanceof Error ? e.message : "Undo failed");
@@ -146,6 +184,7 @@ export function useStudioCommands(handlers: StudioCommandHandlers) {
             const data = await redo(s.sessionId);
             s.setScene(data.scene);
             s.setCounts(data.counts);
+            s.clearScopeDraw();
             logAction("Redo", "info");
           } catch (e) {
             s.setEngineError(e instanceof Error ? e.message : "Redo failed");
@@ -190,7 +229,22 @@ export function useStudioCommands(handlers: StudioCommandHandlers) {
           s.toggleCanvasOverlay("vertices");
           break;
         case "view.labels":
-          s.toggleCanvasOverlay("labels");
+          s.setLayers({ labels: !useWorkspaceStore.getState().layers.labels });
+          break;
+        case "view.cadDrawing":
+          s.setLayers({ cad: !useWorkspaceStore.getState().layers.cad });
+          break;
+        case "view.intZones":
+          s.setLayers({ zones: !useWorkspaceStore.getState().layers.zones });
+          break;
+        case "view.faces":
+          s.setLayers({ faces: !useWorkspaceStore.getState().layers.faces });
+          break;
+        case "view.obstacles":
+          s.setLayers({ obstacles: !useWorkspaceStore.getState().layers.obstacles });
+          break;
+        case "view.boundary":
+          s.setLayers({ boundary: !useWorkspaceStore.getState().layers.boundary });
           break;
         case "view.goToCoordinates":
           s.setGoToOpen(true, "coordinates");
@@ -246,6 +300,106 @@ export function useStudioCommands(handlers: StudioCommandHandlers) {
           logAction("Detection refreshed", "success");
           break;
         }
+        case "detection.defineSlabBoundary":
+        case "detection.pickBoundary": {
+          if (!s.scopeEnabled) return;
+          if (!s.scene) {
+            toast("Import a drawing before defining slab boundary");
+            return;
+          }
+          if (!s.cadAvailable) {
+            toast("CAD source required to pick boundary from drawing");
+            return;
+          }
+          s.clearScopeDraw();
+          try {
+            const candidates = await fetchBoundaryCadCandidates(s.sessionId);
+            s.setBoundaryCadCandidates(candidates);
+            s.setTool("scope-pick");
+            toast("Click a closed CAD polyline on the drawing");
+          } catch (e) {
+            s.setEngineError(e instanceof Error ? e.message : "Could not load CAD boundaries");
+          }
+          break;
+        }
+        case "detection.autoBoundary": {
+          if (!s.scopeEnabled) return;
+          if (!s.scene) {
+            toast("Import a drawing before auto-detecting boundary");
+            return;
+          }
+          if (!s.cadAvailable) {
+            toast("CAD source required for auto boundary detection");
+            return;
+          }
+          s.clearScopeDraw();
+          s.setTool("scope-auto");
+          try {
+            const preview = await autoDetectScopeBoundary(s.sessionId);
+            s.setBoundaryPreview(preview);
+            s.setTool("select");
+            toast(`Auto boundary — ${preview.area_m2.toFixed(1)} m²`);
+          } catch (e) {
+            s.clearScopeDraw();
+            s.setTool("select");
+            s.setEngineError(e instanceof Error ? e.message : "Auto boundary failed");
+          }
+          break;
+        }
+        case "detection.drawSlabBoundary": {
+          if (!s.scopeEnabled) return;
+          if (!s.scene) {
+            toast("Import a drawing before drawing slab boundary");
+            return;
+          }
+          s.clearScopeDraw();
+          s.setTool("scope-draw");
+          toast("Draw boundary — click first point again to close");
+          break;
+        }
+        case "detection.editBoundary": {
+          if (!s.scopeEnabled) return;
+          const ring = s.scene?.scope_boundary?.ring ?? s.boundaryPreview?.ring;
+          if (!ring?.length) {
+            toast("Define a boundary before editing vertices");
+            return;
+          }
+          s.setBoundaryEditRing(ring.map((p) => [...p] as [number, number]));
+          if (s.boundaryPreview) {
+            s.setTool("scope-edit");
+          } else if (s.scene?.scope_boundary) {
+            s.setBoundaryPreview(s.scene.scope_boundary);
+            s.setTool("scope-edit");
+          }
+          break;
+        }
+        case "detection.applyBoundary": {
+          if (!s.scopeEnabled) return;
+          if (!s.scene?.scope_boundary?.ring?.length) {
+            toast("Define a slab boundary before applying");
+            return;
+          }
+          if (!s.cadAvailable) {
+            toast("CAD source unavailable — apply boundary requires CAD geometry");
+            return;
+          }
+          if (
+            needsApplyBoundaryConfirm(s.counts, s.scene?.polygons) &&
+            !confirmApplyBoundary()
+          ) {
+            return;
+          }
+          try {
+            const data = await applyScopeBoundary(s.sessionId);
+            s.setScene(data.scene);
+            s.setCounts(data.counts);
+            s.setActions(data.actions);
+            toast("Detection rerun inside slab boundary.");
+          } catch (e) {
+            s.setEngineError(e instanceof Error ? e.message : "Apply boundary failed");
+          }
+          break;
+        }
         case "detection.seedRecovery":
         case "detection.recoverMissing": {
           if (!s.cadAvailable) {
@@ -254,6 +408,16 @@ export function useStudioCommands(handlers: StudioCommandHandlers) {
           }
           s.setTool("add");
           toast("Click on canvas to recover missing polygon");
+          break;
+        }
+        case "polygon.drawManual": {
+          if (!s.scene) {
+            toast("Import a drawing before drawing a polygon");
+            return;
+          }
+          s.clearManualDraw();
+          s.setTool("manual-draw");
+          toast("Click vertices to draw a manual polygon");
           break;
         }
         case "detection.stats.detected":
@@ -436,9 +600,9 @@ export function useStudioCommands(handlers: StudioCommandHandlers) {
           break;
         case "layout.reset":
           s.applyWorkspaceLayout("default");
-          localStorage.removeItem("int_zone_studio_panels_h");
-          localStorage.removeItem("int_zone_studio_panels_v");
-          toast("Layout reset — reload to restore panel sizes");
+          clearPanelLayouts();
+          window.dispatchEvent(new CustomEvent("studio:reset-panel-layout"));
+          toast("Layout reset");
           break;
         case "palette.open":
           s.setCommandPaletteOpen(true);
@@ -456,6 +620,26 @@ export function useStudioCommands(handlers: StudioCommandHandlers) {
           break;
         case "help.about":
           toast("INT ZONE STUDIO");
+          break;
+        case "help.exportPilotFeedback":
+          try {
+            const mode = await exportPilotFeedbackTemplate();
+            logAction(
+              mode === "open"
+                ? "Opened PILOT_FEEDBACK.md"
+                : "Downloaded PILOT_FEEDBACK.md",
+              "success",
+            );
+            toast(
+              mode === "open"
+                ? "Pilot feedback template opened"
+                : "Pilot feedback template downloaded",
+            );
+          } catch (e) {
+            s.setEngineError(
+              e instanceof Error ? e.message : "Could not export feedback template",
+            );
+          }
           break;
         default:
           break;

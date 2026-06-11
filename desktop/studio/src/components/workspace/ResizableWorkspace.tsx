@@ -4,25 +4,28 @@ import {
   Panel,
   Separator,
   useDefaultLayout,
+  useGroupRef,
   usePanelRef,
   type PanelImperativeHandle,
 } from "react-resizable-panels";
 import { ProjectExplorer } from "../shell/ProjectExplorer";
 import { PropertiesPanel } from "../shell/PropertiesPanel";
 import { ValidationSummary } from "../shell/ValidationSummary";
-import { PolygonTable } from "../shell/PolygonTable";
 import { ViewerChrome } from "../shell/ViewerChrome";
+import { ManualDrawBanner } from "../shell/ManualDrawBanner";
+import { ManualPolygonBanner } from "../shell/ManualPolygonBanner";
+import { BoundaryModeBanner } from "../shell/BoundaryModeBanner";
 import { SeedBanner } from "../shell/SeedBanner";
-import { BottomConsole } from "../shell/BottomConsole";
 import { PanelChrome } from "../shell/PanelChrome";
 import { CadCanvas } from "../viewer/CadCanvas";
 import { useWorkspaceStore } from "../../stores/workspaceStore";
+import {
+  DEFAULT_HORIZONTAL_LAYOUT,
+  DEFAULT_OUTER_LAYOUT,
+  panelStorage,
+} from "../../lib/panelLayout";
+import { WorkspaceBottomDock } from "./WorkspaceBottomDock";
 import type { PanelId } from "../../types";
-
-const panelStorage = {
-  getItem: (name: string) => localStorage.getItem(name),
-  setItem: (name: string, value: string) => localStorage.setItem(name, value),
-};
 
 function DockPanel({
   id,
@@ -33,6 +36,7 @@ function DockPanel({
   panelRef,
   defaultSize,
   minSize,
+  maxSize,
   collapsedSize,
   children,
 }: {
@@ -44,6 +48,7 @@ function DockPanel({
   panelRef: RefObject<PanelImperativeHandle | null>;
   defaultSize: number;
   minSize: number;
+  maxSize?: number;
   collapsedSize: number;
   children: ReactNode;
 }) {
@@ -63,6 +68,7 @@ function DockPanel({
       panelRef={panelRef}
       defaultSize={defaultSize}
       minSize={minSize}
+      maxSize={maxSize}
       collapsible
       collapsedSize={collapsedSize}
       className="panel-shell"
@@ -83,21 +89,30 @@ export function ResizableWorkspace() {
   const panels = useWorkspaceStore((s) => s.panelVisibility);
   const togglePanel = useWorkspaceStore((s) => s.togglePanel);
 
+  const outerGroupRef = useGroupRef();
+  const hGroupRef = useGroupRef();
   const explorerRef = usePanelRef();
   const rightRef = usePanelRef();
-  const tableRef = usePanelRef();
-  const consoleRef = usePanelRef();
+
+  useEffect(() => {
+    const onReset = () => {
+      outerGroupRef.current?.setLayout({ ...DEFAULT_OUTER_LAYOUT });
+      hGroupRef.current?.setLayout({ ...DEFAULT_HORIZONTAL_LAYOUT });
+    };
+    window.addEventListener("studio:reset-panel-layout", onReset);
+    return () => window.removeEventListener("studio:reset-panel-layout", onReset);
+  }, [outerGroupRef, hGroupRef]);
+
+  const outerLayout = useDefaultLayout({
+    id: "int_zone_studio_panels_v",
+    storage: panelStorage,
+    panelIds: ["main", "bottom"],
+  });
 
   const hLayout = useDefaultLayout({
     id: "int_zone_studio_panels_h",
     storage: panelStorage,
     panelIds: ["explorer", "center", "right"],
-  });
-
-  const vLayout = useDefaultLayout({
-    id: "int_zone_studio_panels_v",
-    storage: panelStorage,
-    panelIds: ["canvas", "table", "console"],
   });
 
   const toggle = (panel: PanelId) => () => togglePanel(panel);
@@ -108,108 +123,85 @@ export function ResizableWorkspace() {
   return (
     <div className="workspace-panels">
       <Group
-        id="studio-h"
-        orientation="horizontal"
-        className="workspace-panels-group"
-        defaultLayout={hLayout.defaultLayout ?? { explorer: 11, center: 73, right: 16 }}
-        onLayoutChanged={hLayout.onLayoutChanged}
+        id="studio-outer"
+        orientation="vertical"
+        className="workspace-panels-group workspace-panels-group-outer"
+        groupRef={outerGroupRef}
+        defaultLayout={outerLayout.defaultLayout ?? DEFAULT_OUTER_LAYOUT}
+        onLayoutChanged={outerLayout.onLayoutChanged}
       >
-        <DockPanel
-          id="explorer"
-          title="Explorer"
-          orientation="horizontal"
-          expanded={panels.explorer}
-          onToggle={toggle("explorer")}
-          panelRef={explorerRef}
-          defaultSize={11}
-          minSize={10}
-          collapsedSize={3}
-        >
-          <ProjectExplorer />
-        </DockPanel>
-
-        <Separator className="resize-handle-v" />
-
-        <Panel id="center" defaultSize={73} minSize={45} className="panel-shell">
+        <Panel id="main" defaultSize={72} minSize={45} className="panel-shell">
           <Group
-            id="studio-v"
-            orientation="vertical"
-            className="workspace-panels-group workspace-panels-group-vertical"
-            defaultLayout={vLayout.defaultLayout ?? { canvas: 72, table: 20, console: 8 }}
-            onLayoutChanged={vLayout.onLayoutChanged}
+            id="studio-h"
+            orientation="horizontal"
+            className="workspace-panels-group"
+            groupRef={hGroupRef}
+            defaultLayout={hLayout.defaultLayout ?? DEFAULT_HORIZONTAL_LAYOUT}
+            onLayoutChanged={hLayout.onLayoutChanged}
           >
-            <Panel id="canvas" defaultSize={72} minSize={50} className="panel-shell panel-canvas">
+            <DockPanel
+              id="explorer"
+              title="Explorer"
+              orientation="horizontal"
+              expanded={panels.explorer}
+              onToggle={toggle("explorer")}
+              panelRef={explorerRef}
+              defaultSize={11}
+              minSize={10}
+              collapsedSize={3}
+            >
+              <ProjectExplorer />
+            </DockPanel>
+
+            <Separator className="resize-handle-v" />
+
+            <Panel id="center" defaultSize={73} minSize={40} className="panel-shell panel-canvas">
               <div className="workspace-center panel-content">
                 <ViewerChrome />
                 <SeedBanner />
+                <BoundaryModeBanner />
+                <ManualDrawBanner />
+                <ManualPolygonBanner />
                 <CadCanvas />
               </div>
             </Panel>
 
-            <Separator className="resize-handle-h" />
+            <Separator className="resize-handle-v" />
 
             <DockPanel
-              id="table"
-              title="Polygon Table"
-              orientation="vertical"
-              expanded={panels.table}
-              onToggle={toggle("table")}
-              panelRef={tableRef}
-              defaultSize={20}
+              id="right"
+              title="Inspector"
+              orientation="horizontal"
+              expanded={rightExpanded}
+              onToggle={() => {
+                const st = useWorkspaceStore.getState();
+                const any = st.panelVisibility.properties;
+                st.setPanelVisibility({
+                  properties: !any,
+                  validation: !any,
+                  audit: false,
+                });
+              }}
+              panelRef={rightRef}
+              defaultSize={16}
               minSize={12}
-              collapsedSize={6}
+              collapsedSize={3}
             >
-              <div className="panel-content panel-content-table">
-                <PolygonTable />
-              </div>
-            </DockPanel>
-
-            <Separator className="resize-handle-h" />
-
-            <DockPanel
-              id="console"
-              title="Messages"
-              orientation="vertical"
-              expanded={panels.console}
-              onToggle={toggle("console")}
-              panelRef={consoleRef}
-              defaultSize={8}
-              minSize={8}
-              collapsedSize={6}
-            >
-              <div className="panel-content">
-                <BottomConsole />
+              <div className="panel-content workspace-right flex flex-col">
+                {panels.properties && <PropertiesPanel />}
+                {panels.validation && <ValidationSummary />}
               </div>
             </DockPanel>
           </Group>
         </Panel>
 
-        <Separator className="resize-handle-v" />
+        <Separator className="resize-handle-h" />
 
-        <DockPanel
-          id="right"
-          title="Inspector"
-          orientation="horizontal"
-          expanded={rightExpanded}
-          onToggle={() => {
-            const st = useWorkspaceStore.getState();
-            const any = st.panelVisibility.properties;
-            st.setPanelVisibility({
-              properties: !any,
-              validation: !any,
-              audit: false,
-            });
-          }}
-          panelRef={rightRef}
-          defaultSize={16}
-          minSize={12}
-          collapsedSize={3}
-        >
-          <div className="panel-content workspace-right flex flex-col">
-            {panels.properties && <PropertiesPanel />}
-            {panels.validation && <ValidationSummary />}
+        <Panel id="bottom" defaultSize={28} minSize={15} className="panel-shell panel-bottom-full">
+          <div className="panel-content">
+            <WorkspaceBottomDock />
           </div>
-        </DockPanel>
+        </Panel>
       </Group>
     </div>
   );

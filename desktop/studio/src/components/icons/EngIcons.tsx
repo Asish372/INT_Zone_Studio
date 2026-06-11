@@ -181,6 +181,70 @@ export function IconZone({ size, className }: IconProps) {
   );
 }
 
+export function IconBoundary({ size, className }: IconProps) {
+  return (
+    <Svg size={size} className={className}>
+      <rect x="4" y="6" width="16" height="12" stroke="#a855f7" strokeWidth={stroke} strokeDasharray="4 3" />
+      <path d="M4 6h16M4 18h16M4 6v12M20 6v12" stroke="currentColor" strokeWidth={1.2} />
+    </Svg>
+  );
+}
+
+export function IconObstacle({ size, className }: IconProps) {
+  return (
+    <Svg size={size} className={className}>
+      <rect x="6" y="8" width="12" height="10" stroke="#f97316" strokeWidth={stroke} fill="rgba(249,115,22,0.15)" />
+      <path d="M6 8l6-4 6 4" stroke="#f97316" strokeWidth={stroke} />
+    </Svg>
+  );
+}
+
+export function IconCadDrawing({ size, className }: IconProps) {
+  return (
+    <Svg size={size} className={className}>
+      <path d="M4 18L8 6l4 8 4-6 4 10" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" />
+      <path d="M3 18h18" stroke="currentColor" strokeWidth={stroke} />
+    </Svg>
+  );
+}
+
+export function IconFaces({ size, className }: IconProps) {
+  return (
+    <Svg size={size} className={className}>
+      <path d="M5 17L4 9l7-3 7 3-1 8H5z" stroke="#06b6d4" strokeWidth={stroke} fill="rgba(6,182,212,0.12)" />
+      <path d="M12 6v11M8 10h8" stroke="#06b6d4" strokeWidth={1.2} opacity={0.6} />
+    </Svg>
+  );
+}
+
+export function IconLabels({ size, className }: IconProps) {
+  return (
+    <Svg size={size} className={className}>
+      <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" strokeWidth={stroke} />
+      <path d="M8 10h8M8 14h5" stroke="currentColor" strokeWidth={1.4} strokeLinecap="round" />
+    </Svg>
+  );
+}
+
+export function IconRerun({ size, className }: IconProps) {
+  return (
+    <Svg size={size} className={className}>
+      <path d="M17 7a6 6 0 1 0 1.8 4.3" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" />
+      <path d="M17 3v4h-4" stroke="currentColor" strokeWidth={stroke} strokeLinecap="round" />
+      <rect x="7" y="9" width="10" height="10" rx="1" stroke="#06b6d4" strokeWidth={1.4} strokeDasharray="2 2" />
+    </Svg>
+  );
+}
+
+export function IconManualDraw({ size, className }: IconProps) {
+  return (
+    <Svg size={size} className={className}>
+      <path d="M5 18l3-10 5 4 6-9" stroke="#8b5cf6" strokeWidth={stroke} strokeLinecap="round" />
+      <circle cx="18" cy="3" r="2" stroke="#8b5cf6" strokeWidth={stroke} />
+    </Svg>
+  );
+}
+
 export function IconUndo({ size, className }: IconProps) {
   return (
     <Svg size={size} className={className}>
@@ -215,10 +279,23 @@ const COMMAND_ICONS: Partial<
   "export.fullPackage": IconExport,
   "export.zonesDxf": IconExport,
   "detection.run": IconDetect,
-  "detection.rerun": IconDetect,
+  "detection.rerun": IconRerun,
   "detection.all": IconDetect,
+  "detection.pickBoundary": IconBoundary,
+  "detection.autoBoundary": IconBoundary,
+  "detection.drawSlabBoundary": IconBoundary,
+  "detection.editBoundary": IconBoundary,
+  "detection.defineSlabBoundary": IconBoundary,
+  "detection.applyBoundary": IconBoundary,
   "detection.seedRecovery": IconSeed,
   "detection.recoverMissing": IconSeed,
+  "polygon.drawManual": IconManualDraw,
+  "view.cadDrawing": IconCadDrawing,
+  "view.intZones": IconZone,
+  "view.faces": IconFaces,
+  "view.obstacles": IconObstacle,
+  "view.boundary": IconBoundary,
+  "view.labels": IconLabels,
   "review.validate": IconValidate,
   "tool.select": IconSelect,
   "tool.rectSelect": IconRectSelect,
@@ -236,6 +313,36 @@ const COMMAND_ICONS: Partial<
   "edit.redo": IconUndo,
   "review.mode": IconValidate,
   "review.overlay": IconPolygon,
+  "review.errors": IconReject,
+  "review.warnings": IconValidate,
+  "polygon.delete": IconReject,
+  "file.newProject": IconOpen,
+  "file.projectSettings": IconSave,
+  "view.vertices": IconPolygon,
+  "view.coordinates": IconCadDrawing,
+  "view.theme.dark": IconLayers,
+  "view.theme.light": IconCadDrawing,
+  "view.theme.auto": IconLayers,
+  "detection.stats.detected": IconDetect,
+  "detection.stats.missing": IconSeed,
+  "detection.stats.coverage": IconValidate,
+  "zones.area": IconZone,
+  "zones.count": IconZone,
+  "zones.polygonCount": IconFaces,
+  "layout.default": IconFit,
+  "layout.review": IconValidate,
+  "layout.detection": IconDetect,
+  "layout.reset": IconRerun,
+  "help.exportPilotFeedback": IconExport,
+  "help.shortcuts": IconLabels,
+  "help.systemInfo": IconValidate,
+  "help.about": IconZone,
+  "panel.toggle.explorer": IconOpen,
+  "panel.toggle.table": IconFaces,
+  "panel.toggle.properties": IconLabels,
+  "panel.toggle.validation": IconValidate,
+  "panel.toggle.console": IconLabels,
+  "panel.toggle.minimap": IconFit,
 };
 
 export function CommandIcon({

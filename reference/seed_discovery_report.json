@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-06T00:20:18.357934",
+  "generated": "2026-06-11T11:03:37.213977",
   "drawings": [
     {
       "drawing": "6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dwg",
@@ -16,8 +16,27 @@
     {
       "drawing": "S111_J.dwg",
       "auto_detected": 406,
-      "candidate_seeds": 0,
-      "seeds": []
+      "candidate_seeds": 2,
+      "seeds": [
+        {
+          "id": "auto-034",
+          "x": 116395.955,
+          "y": 162925.1,
+          "label_hint": "gap-above_threshold_close",
+          "gap_status": "above_threshold_close",
+          "gap_distance": 900.0,
+          "area_m2": 3.2862
+        },
+        {
+          "id": "auto-036",
+          "x": 116495.955,
+          "y": 162925.1,
+          "label_hint": "gap-large_gap_manual_review",
+          "gap_status": "large_gap_manual_review",
+          "gap_distance": 3100.0,
+          "area_m2": 3.2862
+        }
+      ]
     }
   ]
 }

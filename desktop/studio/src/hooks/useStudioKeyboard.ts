@@ -23,6 +23,11 @@ export function useStudioKeyboard(
 
       if (inInput) return;
 
+      if (e.code === "Space") {
+        e.preventDefault();
+        return;
+      }
+
       if (e.ctrlKey && e.key.toLowerCase() === "g") {
         e.preventDefault();
         executeCommand("polygon.find");

@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "build:engine": "powershell -NoProfile -ExecutionPolicy Bypass -File ../../scripts/build_engine_bundle.ps1",
+    "tauri:build": "npm run build:engine && tauri build --bundles nsis"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",

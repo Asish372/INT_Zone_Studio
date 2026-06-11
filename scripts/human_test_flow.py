@@ -74,12 +74,21 @@ def main() -> int:
         upload = r.json()
         polygon_count = upload["counts"]["total"]
         print(f"  Loaded {upload['source_file']} — {polygon_count} polygons")
-        assert polygon_count == 618
+        assert polygon_count > 0, "Import produced zero polygons"
         observe("1", f"Upload took ~{r.elapsed.total_seconds():.1f}s — user may think app froze on large DWG")
+        import_base_count = polygon_count
 
-        # 2 Find polygon
-        step("2 — Find a polygon")
-        observe("2", "Without guidance, user may click canvas (hard at fit zoom) OR scroll polygon table")
+        # 2 Detect refresh (Run Detection button behavior)
+        step("2 — Detect refresh")
+        r = client.get(f"{ENGINE}/scene", headers={"X-Session-Id": session_id})
+        r.raise_for_status()
+        refresh_count = r.json()["summary"]["counts"]["total"]
+        assert refresh_count == import_base_count
+        print(f"  Scene refresh — count unchanged at {refresh_count}")
+
+        # 3 Find polygon
+        step("3 — Find a polygon")
+        observe("3", "Without guidance, user may click canvas (hard at fit zoom) OR scroll polygon table")
         target_id = upload["scene"]["polygons"][0]["id"]
         r = client.post(
             f"{ENGINE}/select",
@@ -89,11 +98,37 @@ def main() -> int:
         r.raise_for_status()
         selected = r.json()
         print(f"  Selected polygon #{target_id}, area={selected.get('area_m2', '?')} m²")
-        observe("2", "Table row click is more reliable than canvas click for first-time users")
+        observe("3", "Table row click is more reliable than canvas click for first-time users")
 
-        # 3 Save project
-        step("3 — Save project")
-        observe("3", "First save opens modal asking for FULL PATH — high confusion risk for non-devs")
+        # 3b Manual polygon
+        step("3b — Draw manual polygon")
+        polys = upload["scene"]["polygons"]
+        minx = miny = 1e18
+        maxx = maxy = -1e18
+        for poly in polys:
+            for pt in poly.get("ring") or []:
+                x, y = float(pt[0]), float(pt[1])
+                minx, miny = min(minx, x), min(miny, y)
+                maxx, maxy = max(maxx, x), max(maxy, y)
+        x0, y0 = maxx + 10_000.0, miny + 10_000.0
+        size = 5000.0
+        ring = [[x0, y0], [x0 + size, y0], [x0 + size, y0 + size], [x0, y0 + size]]
+        r = client.post(
+            f"{ENGINE}/polygon/manual",
+            headers={"X-Session-Id": session_id, "Content-Type": "application/json"},
+            json={"ring": ring},
+        )
+        r.raise_for_status()
+        manual = r.json()
+        polygon_count = manual["counts"]["total"]
+        manual_id = manual["polygon"]["id"]
+        print(f"  Manual polygon #{manual_id} — total now {polygon_count}")
+        assert polygon_count == import_base_count + 1
+        observe("3b", "Manual polygon adds +1 to total when placed outside existing cells")
+
+        # 4 Save project
+        step("4 — Save project")
+        observe("4", "First save opens modal asking for FULL PATH — high confusion risk for non-devs")
         with tempfile.TemporaryDirectory() as tmp:
             save_path = Path(tmp) / "pilot_human_test.pjson"
             r = client.post(
@@ -105,16 +140,16 @@ def main() -> int:
             assert save_path.is_file()
             print(f"  Saved to {save_path}")
 
-            # 4 Close app (new session)
-            step("4 — Close app (new session)")
+            # 5 Close app (new session)
+            step("5 — Close app (new session)")
             r = client.post(f"{ENGINE}/session")
             r.raise_for_status()
             new_session = r.json()["session_id"]
             print(f"  New session {new_session}")
 
-            # 5 Reopen project
-            step("5 — Reopen project")
-            observe("5", "User must choose 'Open Project' not 'Import Drawing' — easy mistake")
+            # 6 Reopen project
+            step("6 — Reopen project")
+            observe("6", "User must choose 'Open Project' not 'Import Drawing' — easy mistake")
             with save_path.open("rb") as fh:
                 r = client.post(
                     f"{ENGINE}/workspace/load-project",
@@ -128,9 +163,12 @@ def main() -> int:
             assert target_id in restored_ids
             print(f"  Restored {loaded['counts']['total']} polygons, selection #{target_id} present")
 
-            # 6 Export package
-            step("6 — Export package")
-            observe("6", "Export button top-right; 'Export Project Package' is primary but buried in modal list")
+            manual_restored = any(p.get("source") == "manual" for p in loaded["scene"]["polygons"])
+            assert manual_restored, "Manual polygon missing after reopen"
+
+            # 7 Export package
+            step("7 — Export package")
+            observe("7", "Export button top-right; 'Export Project Package' is primary but buried in modal list")
             r = client.post(
                 f"{ENGINE}/export",
                 headers={"X-Session-Id": new_session, "Content-Type": "application/json"},

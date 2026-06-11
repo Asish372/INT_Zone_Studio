@@ -61,6 +61,25 @@ logging:
   log_dir: ./logs
   log_level: INFO
 
+# User-defined slab boundary (V2 Phase 1) — off during pilot unless explicitly enabled
+scope:
+  enabled: true
+  slab_outline_layer: S-FNDN-1
+  slab_min_polygon_area_m2: 100.0
+  slab_concave_hull_ratio: 0.2
+  pick_tolerance_mm: 500
+
+# Phase 1.6 — column / pillar obstacle classification (post-detection only)
+obstacles:
+  enabled: true
+  column_layers:
+    - S-COLS
+    - S-COLS-1
+  max_match_area_m2: 25.0
+  centroid_match: true
+  iou_threshold: 0.35
+  default_footprint_mm: 400.0
+
 # Seed-assisted fallback (P1 + P2 local repair)
 seed_assist:
   enabled: true

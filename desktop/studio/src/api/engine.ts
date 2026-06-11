@@ -10,7 +10,9 @@ import type {
   ReviewStatus,
   SceneData,
   SeedPreview,
+  SlabBoundary,
   Summary,
+  WorkspaceScope,
   UserRole,
   ValidationResult,
   WorkspaceSaveResult,
@@ -21,6 +23,18 @@ const ENGINE_BASE =
   (import.meta.env.DEV ? "/api" : "http://127.0.0.1:8765");
 
 const SESSION_KEY = "int_zone_studio_session_id";
+
+const ENGINE_UNREACHABLE_MSG = import.meta.env.DEV
+  ? "Engine sidecar not reachable. Start it with: python scripts/run_polygon_workspace.py"
+  : "Could not reach the detection engine. Close INT Zone Studio completely, reopen from Start Menu, and wait a few seconds before importing.";
+
+async function engineFetch(url: string, init?: RequestInit): Promise<Response> {
+  try {
+    return await fetch(url, init);
+  } catch {
+    throw new Error(ENGINE_UNREACHABLE_MSG);
+  }
+}
 
 function headers(sessionId: string, json = false): HeadersInit {
   const h: Record<string, string> = { "X-Session-Id": sessionId };
@@ -46,28 +60,34 @@ export function storeSessionId(id: string): void {
   localStorage.setItem(SESSION_KEY, id);
 }
 
+export async function readEngineStartupError(): Promise<string | null> {
+  if (import.meta.env.DEV) return null;
+  try {
+    const { invoke } = await import("@tauri-apps/api/core");
+    return await invoke<string | null>("engine_startup_error");
+  } catch {
+    return null;
+  }
+}
+
 export async function waitForEngine(
-  maxAttempts = 30,
+  maxAttempts = 60,
   intervalMs = 500,
 ): Promise<void> {
   for (let i = 0; i < maxAttempts; i++) {
     try {
-      const res = await fetch(`${ENGINE_BASE}/health`);
+      const res = await engineFetch(`${ENGINE_BASE}/health`);
       if (res.ok) return;
     } catch {
       /* retry */
     }
     await new Promise((r) => setTimeout(r, intervalMs));
   }
-  throw new Error(
-    "Engine sidecar not reachable at " +
-      ENGINE_BASE +
-      ". Start it with: python scripts/run_polygon_workspace.py",
-  );
+  throw new Error(ENGINE_UNREACHABLE_MSG);
 }
 
 export async function createSession(): Promise<string> {
-  const res = await fetch(`${ENGINE_BASE}/session`, { method: "POST" });
+  const res = await engineFetch(`${ENGINE_BASE}/session`, { method: "POST" });
   if (!res.ok) throw new Error(await parseError(res));
   const data = await res.json();
   storeSessionId(data.session_id);
@@ -95,7 +115,7 @@ export async function uploadDrawing(
 ): Promise<UploadResult> {
   const fd = new FormData();
   fd.append("file", file);
-  const res = await fetch(`${ENGINE_BASE}/upload`, {
+  const res = await engineFetch(`${ENGINE_BASE}/upload`, {
     method: "POST",
     headers: headers(sessionId),
     body: fd,
@@ -109,7 +129,7 @@ export async function uploadDrawing(
 export async function fetchScene(
   sessionId: string,
 ): Promise<{ scene: SceneData; summary: Summary }> {
-  const res = await fetch(`${ENGINE_BASE}/scene`, {
+  const res = await engineFetch(`${ENGINE_BASE}/scene`, {
     headers: headers(sessionId),
   });
   if (!res.ok) throw new Error(await parseError(res));
@@ -117,7 +137,7 @@ export async function fetchScene(
 }
 
 export async function fetchSummary(sessionId: string): Promise<Summary> {
-  const res = await fetch(`${ENGINE_BASE}/summary`, {
+  const res = await engineFetch(`${ENGINE_BASE}/summary`, {
     headers: headers(sessionId),
   });
   if (!res.ok) throw new Error(await parseError(res));
@@ -128,7 +148,7 @@ export async function selectPolygon(
   sessionId: string,
   polygonId: number | null,
 ): Promise<PolygonRecord | null> {
-  const res = await fetch(`${ENGINE_BASE}/select`, {
+  const res = await engineFetch(`${ENGINE_BASE}/select`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ polygon_id: polygonId }),
@@ -142,7 +162,7 @@ export async function selectPolygons(
   sessionId: string,
   polygonIds: number[],
 ): Promise<{ selected_ids: number[]; selected: PolygonRecord[] }> {
-  const res = await fetch(`${ENGINE_BASE}/select`, {
+  const res = await engineFetch(`${ENGINE_BASE}/select`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ polygon_ids: polygonIds }),
@@ -156,7 +176,7 @@ export async function previewRecover(
   x: number,
   y: number,
 ): Promise<SeedPreview> {
-  const res = await fetch(`${ENGINE_BASE}/recover/preview`, {
+  const res = await engineFetch(`${ENGINE_BASE}/recover/preview`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ x, y }),
@@ -177,7 +197,7 @@ export async function confirmRecover(
   polygon: PolygonRecord;
   selected: PolygonRecord;
 }> {
-  const res = await fetch(`${ENGINE_BASE}/recover`, {
+  const res = await engineFetch(`${ENGINE_BASE}/recover`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ x, y }),
@@ -190,7 +210,7 @@ export async function deletePolygon(
   sessionId: string,
   polygonId: number,
 ): Promise<{ scene: SceneData; counts: Counts; actions: ActionEntry[] }> {
-  const res = await fetch(`${ENGINE_BASE}/polygon/${polygonId}/delete`, {
+  const res = await engineFetch(`${ENGINE_BASE}/polygon/${polygonId}/delete`, {
     method: "POST",
     headers: headers(sessionId),
   });
@@ -203,7 +223,7 @@ export async function exportWorkspace(
   formats: string[],
   useTimestamp = true,
 ): Promise<ExportResult> {
-  const res = await fetch(`${ENGINE_BASE}/export`, {
+  const res = await engineFetch(`${ENGINE_BASE}/export`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ formats, use_timestamp: useTimestamp }),
@@ -216,7 +236,7 @@ export async function saveWorkspace(
   sessionId: string,
   path: string,
 ): Promise<WorkspaceSaveResult> {
-  const res = await fetch(`${ENGINE_BASE}/workspace/save`, {
+  const res = await engineFetch(`${ENGINE_BASE}/workspace/save`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ path }),
@@ -250,7 +270,7 @@ export async function loadProjectFile(
 ): Promise<LoadProjectResult> {
   const fd = new FormData();
   fd.append("file", file);
-  const res = await fetch(`${ENGINE_BASE}/workspace/load-project`, {
+  const res = await engineFetch(`${ENGINE_BASE}/workspace/load-project`, {
     method: "POST",
     headers: headers(sessionId),
     body: fd,
@@ -260,7 +280,7 @@ export async function loadProjectFile(
 }
 
 export async function openFolder(path: string): Promise<{ path: string }> {
-  const res = await fetch(`${ENGINE_BASE}/open-folder`, {
+  const res = await engineFetch(`${ENGINE_BASE}/open-folder`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ path }),
@@ -272,7 +292,7 @@ export async function openFolder(path: string): Promise<{ path: string }> {
 export async function runValidation(
   sessionId: string,
 ): Promise<{ validation: ValidationResult; actions: ActionEntry[] }> {
-  const res = await fetch(`${ENGINE_BASE}/validate`, {
+  const res = await engineFetch(`${ENGINE_BASE}/validate`, {
     method: "POST",
     headers: headers(sessionId),
   });
@@ -285,7 +305,7 @@ export async function reviewPolygon(
   polygonId: number,
   reviewStatus: ReviewStatus,
 ): Promise<{ polygon: PolygonRecord; scene: SceneData; actions: ActionEntry[] }> {
-  const res = await fetch(`${ENGINE_BASE}/polygon/${polygonId}/review`, {
+  const res = await engineFetch(`${ENGINE_BASE}/polygon/${polygonId}/review`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ review_status: reviewStatus }),
@@ -298,7 +318,7 @@ export async function setExpectedCount(
   sessionId: string,
   count: number,
 ): Promise<void> {
-  const res = await fetch(`${ENGINE_BASE}/expected-count`, {
+  const res = await engineFetch(`${ENGINE_BASE}/expected-count`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ count }),
@@ -311,7 +331,7 @@ export async function setUser(
   user: string,
   role: UserRole,
 ): Promise<void> {
-  const res = await fetch(`${ENGINE_BASE}/user`, {
+  const res = await engineFetch(`${ENGINE_BASE}/user`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ user, role }),
@@ -322,7 +342,7 @@ export async function setUser(
 export async function generateZones(
   sessionId: string,
 ): Promise<{ zones: IntZone[]; scene: SceneData; actions: ActionEntry[] }> {
-  const res = await fetch(`${ENGINE_BASE}/zones/generate`, {
+  const res = await engineFetch(`${ENGINE_BASE}/zones/generate`, {
     method: "POST",
     headers: headers(sessionId),
   });
@@ -335,7 +355,7 @@ export async function mergeZones(
   zoneA: string,
   zoneB: string,
 ): Promise<{ zones: IntZone[]; scene: SceneData }> {
-  const res = await fetch(`${ENGINE_BASE}/zones/merge`, {
+  const res = await engineFetch(`${ENGINE_BASE}/zones/merge`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ zone_a: zoneA, zone_b: zoneB }),
@@ -349,7 +369,7 @@ export async function renameZone(
   oldLabel: string,
   newLabel: string,
 ): Promise<{ zones: IntZone[]; scene: SceneData }> {
-  const res = await fetch(`${ENGINE_BASE}/zones/rename`, {
+  const res = await engineFetch(`${ENGINE_BASE}/zones/rename`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ old_label: oldLabel, new_label: newLabel }),
@@ -359,7 +379,7 @@ export async function renameZone(
 }
 
 export async function undo(sessionId: string): Promise<{ scene: SceneData; counts: Counts }> {
-  const res = await fetch(`${ENGINE_BASE}/undo`, {
+  const res = await engineFetch(`${ENGINE_BASE}/undo`, {
     method: "POST",
     headers: headers(sessionId),
   });
@@ -368,7 +388,7 @@ export async function undo(sessionId: string): Promise<{ scene: SceneData; count
 }
 
 export async function redo(sessionId: string): Promise<{ scene: SceneData; counts: Counts }> {
-  const res = await fetch(`${ENGINE_BASE}/redo`, {
+  const res = await engineFetch(`${ENGINE_BASE}/redo`, {
     method: "POST",
     headers: headers(sessionId),
   });
@@ -381,7 +401,7 @@ export async function addComment(
   polygonId: number,
   text: string,
 ): Promise<Comment[]> {
-  const res = await fetch(`${ENGINE_BASE}/polygon/${polygonId}/comment`, {
+  const res = await engineFetch(`${ENGINE_BASE}/polygon/${polygonId}/comment`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ text }),
@@ -395,7 +415,7 @@ export async function fetchComments(
   sessionId: string,
   polygonId: number,
 ): Promise<Comment[]> {
-  const res = await fetch(`${ENGINE_BASE}/polygon/${polygonId}/comments`, {
+  const res = await engineFetch(`${ENGINE_BASE}/polygon/${polygonId}/comments`, {
     headers: headers(sessionId),
   });
   if (!res.ok) throw new Error(await parseError(res));
@@ -409,7 +429,7 @@ export async function addMarkup(
   y: number,
   text = "",
 ): Promise<Markup[]> {
-  const res = await fetch(`${ENGINE_BASE}/markups`, {
+  const res = await engineFetch(`${ENGINE_BASE}/markups`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ x, y, text }),
@@ -420,14 +440,14 @@ export async function addMarkup(
 }
 
 export async function fetchProjects(): Promise<ProjectMeta[]> {
-  const res = await fetch(`${ENGINE_BASE}/projects`);
+  const res = await engineFetch(`${ENGINE_BASE}/projects`);
   if (!res.ok) throw new Error(await parseError(res));
   const data = await res.json();
   return data.projects;
 }
 
 export async function createProject(name: string): Promise<ProjectMeta> {
-  const res = await fetch(`${ENGINE_BASE}/projects`, {
+  const res = await engineFetch(`${ENGINE_BASE}/projects`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name }),
@@ -442,7 +462,7 @@ export async function saveProjectVersion(
   projectId: string,
   label?: string,
 ): Promise<ProjectMeta> {
-  const res = await fetch(`${ENGINE_BASE}/projects/${projectId}/versions`, {
+  const res = await engineFetch(`${ENGINE_BASE}/projects/${projectId}/versions`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ label }),
@@ -457,7 +477,7 @@ export async function loadProjectVersion(
   projectId: string,
   versionId: string,
 ): Promise<{ scene: SceneData; counts: Counts; actions: ActionEntry[] }> {
-  const res = await fetch(`${ENGINE_BASE}/projects/load-version`, {
+  const res = await engineFetch(`${ENGINE_BASE}/projects/load-version`, {
     method: "POST",
     headers: headers(sessionId, true),
     body: JSON.stringify({ project_id: projectId, version_id: versionId }),
@@ -469,9 +489,157 @@ export async function loadProjectVersion(
 export async function cloudSync(
   sessionId: string,
 ): Promise<{ path: string }> {
-  const res = await fetch(`${ENGINE_BASE}/cloud/sync`, {
+  const res = await engineFetch(`${ENGINE_BASE}/cloud/sync`, {
     method: "POST",
     headers: headers(sessionId),
+  });
+  if (!res.ok) throw new Error(await parseError(res));
+  return res.json();
+}
+
+export async function fetchScopeConfig(): Promise<{ enabled: boolean }> {
+  const res = await engineFetch(`${ENGINE_BASE}/scope/config`);
+  if (!res.ok) throw new Error(await parseError(res));
+  return res.json();
+}
+
+export async function previewScopeBoundary(
+  sessionId: string,
+  ring: [number, number][],
+): Promise<SlabBoundary> {
+  const res = await engineFetch(`${ENGINE_BASE}/scope/boundary/preview`, {
+    method: "POST",
+    headers: headers(sessionId, true),
+    body: JSON.stringify({ ring }),
+  });
+  if (!res.ok) throw new Error(await parseError(res));
+  const data = await res.json();
+  return data.preview as SlabBoundary;
+}
+
+export async function fetchBoundaryCadCandidates(
+  sessionId: string,
+): Promise<import("../types").CadBoundaryCandidate[]> {
+  const res = await engineFetch(`${ENGINE_BASE}/scope/boundary/candidates`, {
+    headers: headers(sessionId),
+  });
+  if (!res.ok) throw new Error(await parseError(res));
+  const data = await res.json();
+  return data.candidates ?? [];
+}
+
+export async function pickScopeBoundary(
+  sessionId: string,
+  x: number,
+  y: number,
+): Promise<SlabBoundary> {
+  const res = await engineFetch(`${ENGINE_BASE}/scope/boundary/pick`, {
+    method: "POST",
+    headers: headers(sessionId, true),
+    body: JSON.stringify({ x, y }),
+  });
+  if (!res.ok) throw new Error(await parseError(res));
+  const data = await res.json();
+  return data.preview as SlabBoundary;
+}
+
+export async function autoDetectScopeBoundary(
+  sessionId: string,
+): Promise<SlabBoundary> {
+  const res = await engineFetch(`${ENGINE_BASE}/scope/boundary/auto`, {
+    method: "POST",
+    headers: headers(sessionId),
+  });
+  if (!res.ok) throw new Error(await parseError(res));
+  const data = await res.json();
+  return data.preview as SlabBoundary;
+}
+
+export async function commitScopeBoundary(
+  sessionId: string,
+  ring: [number, number][],
+  options?: {
+    source?: SlabBoundary["source"];
+    cad_ref?: SlabBoundary["cad_ref"];
+    auto_layer?: string;
+  },
+): Promise<{
+  scene: SceneData;
+  scope: WorkspaceScope;
+  actions: ActionEntry[];
+}> {
+  const res = await engineFetch(`${ENGINE_BASE}/scope/boundary`, {
+    method: "PUT",
+    headers: headers(sessionId, true),
+    body: JSON.stringify({
+      ring,
+      source: options?.source ?? "drawn",
+      cad_ref: options?.cad_ref,
+      auto_layer: options?.auto_layer,
+    }),
+  });
+  if (!res.ok) throw new Error(await parseError(res));
+  return res.json();
+}
+
+export async function applyScopeBoundary(
+  sessionId: string,
+): Promise<{
+  scene: SceneData;
+  scope: WorkspaceScope;
+  counts: Counts;
+  actions: ActionEntry[];
+}> {
+  const res = await engineFetch(`${ENGINE_BASE}/scope/boundary/apply`, {
+    method: "POST",
+    headers: headers(sessionId),
+  });
+  if (!res.ok) throw new Error(await parseError(res));
+  return res.json();
+}
+
+export async function clearScopeBoundary(
+  sessionId: string,
+): Promise<{
+  scene: SceneData;
+  scope: WorkspaceScope;
+  actions: ActionEntry[];
+}> {
+  const res = await engineFetch(`${ENGINE_BASE}/scope/boundary`, {
+    method: "DELETE",
+    headers: headers(sessionId),
+  });
+  if (!res.ok) throw new Error(await parseError(res));
+  return res.json();
+}
+
+export async function previewManualPolygon(
+  sessionId: string,
+  ring: [number, number][],
+): Promise<SeedPreview> {
+  const res = await engineFetch(`${ENGINE_BASE}/polygon/manual/preview`, {
+    method: "POST",
+    headers: headers(sessionId, true),
+    body: JSON.stringify({ ring }),
+  });
+  if (!res.ok) throw new Error(await parseError(res));
+  const data = await res.json();
+  return data.preview as SeedPreview;
+}
+
+export async function commitManualPolygon(
+  sessionId: string,
+  ring: [number, number][],
+): Promise<{
+  scene: SceneData;
+  counts: Counts;
+  actions: ActionEntry[];
+  polygon: PolygonRecord;
+}> {
+  const res = await engineFetch(`${ENGINE_BASE}/polygon/manual`, {
+    method: "POST",
+    headers: headers(sessionId, true),
+    body: JSON.stringify({ ring }),
   });
   if (!res.ok) throw new Error(await parseError(res));
   return res.json();

@@ -8,6 +8,8 @@ from shapely.geometry import Polygon
 
 from src.zone_engine.models import FaceData
 
+from desktop.engine_sidecar.workspace_save import is_partition_polygon
+
 
 def _polygon_ring(poly: Polygon) -> list[list[float]]:
     return [[float(x), float(y)] for x, y in poly.exterior.coords]
@@ -30,6 +32,8 @@ def face_to_record(face: FaceData, unit_scale_m: float = 0.001) -> dict[str, Any
         "id": face.face_id,
         "source": "auto",
         "status": "active",
+        "scope_excluded": False,
+        "geometry_role": "partition",
         "ring": _polygon_ring(face.polygon),
         "area_m2": round(face.area_m2, 4),
         "perimeter_m": round(float(face.polygon.length) * unit_scale_m, 4),
@@ -57,6 +61,8 @@ def polygon_to_record(
         "id": polygon_id,
         "source": source,
         "status": status,
+        "scope_excluded": False,
+        "geometry_role": "partition",
         "ring": _polygon_ring(polygon),
         **_metrics(polygon, unit_scale_m),
     }
@@ -69,7 +75,7 @@ def polygon_overlaps_existing(
     iou_threshold: float = 0.95,
 ) -> bool:
     for rec in records:
-        if rec.get("status") == "deleted":
+        if not is_partition_polygon(rec):
             continue
         ring = rec.get("ring")
         if not ring or len(ring) < 3:

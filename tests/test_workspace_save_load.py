@@ -50,3 +50,6 @@ def test_workspace_round_trip_preserves_metadata():
     assert loaded["comments"]["1"][0]["text"] == "ok"
     assert loaded["markups"][0]["text"] == "note"
     assert len(loaded["polygons"]) == 1
+    assert loaded["scope"]["boundary"] is None
+    assert loaded["scope"]["detection_scoped"] is False
+    assert loaded["version"] == 3

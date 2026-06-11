@@ -4,6 +4,7 @@ import { applyProjectLoad } from "../../lib/applyProjectLoad";
 import { useWorkspaceStore } from "../../stores/workspaceStore";
 import { BUILD_LABEL, PRODUCT_NAME } from "../../lib/buildInfo";
 import { Logo } from "../brand/Logo";
+import { EngineErrorBar } from "../shell/EngineErrorBar";
 
 function dispatchFitView() {
   requestAnimationFrame(() => {
@@ -154,6 +155,9 @@ export function WelcomeScreen() {
       </aside>
 
       <main className="flex flex-1 flex-col items-center justify-center bg-[var(--surface-deep)] p-8">
+        <div className="mb-3 w-full max-w-lg">
+          <EngineErrorBar />
+        </div>
         <div
           className={`drop-zone w-full max-w-lg ${dragging ? "drop-zone-active" : ""}`}
           onDragOver={(e) => {

@@ -1,0 +1,5 @@
+date,engineer,round,request_or_confusion,category,action_taken,notes
+2026-06-10,founder,R1-prep,Open Project vs Import Drawing,confusion,noted,Import = new CAD; Open = saved .pjson
+2026-06-10,founder,R1-prep,Save requires full path,confusion,noted,No native file picker in Save Workspace modal
+2026-06-10,founder,R1-prep,Export 8 options,confusion,noted,Pilot: use Export Project Package only
+2026-06-10,founder,R1-prep,Re-run Detection,confusion,noted,Refreshes scene; not a fresh full re-detect

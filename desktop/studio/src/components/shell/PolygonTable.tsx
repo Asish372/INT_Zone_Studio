@@ -8,6 +8,7 @@ const FILTERS: { id: PolygonFilter; label: string }[] = [
   { id: "all", label: "All" },
   { id: "auto", label: "Auto" },
   { id: "recovered", label: "Recovered" },
+  { id: "manual", label: "Manual" },
   { id: "deleted", label: "Deleted" },
   { id: "large", label: "Large (>100)" },
   { id: "small", label: "Small (<5)" },
@@ -54,7 +55,7 @@ export function PolygonTable() {
   };
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-[var(--surface-panel)]">
+    <div className="flex h-full w-full min-h-0 flex-col bg-[var(--surface-panel)]">
       <div className="flex shrink-0 items-center gap-2 border-b border-[var(--border-default)] px-2 py-1">
         <button
           type="button"

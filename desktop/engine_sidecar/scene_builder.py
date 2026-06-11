@@ -6,6 +6,8 @@ from typing import Any
 
 from shapely.geometry import LineString
 
+from desktop.engine_sidecar.workspace_save import is_partition_polygon
+
 
 def build_scene(
     *,
@@ -13,6 +15,7 @@ def build_scene(
     cad_segments: list[LineString],
     polygons: list[dict[str, Any]],
     unit_label: str = "mm",
+    scope_boundary: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Return scene JSON for the canvas viewer."""
     cad_lines: list[list[float]] = []
@@ -27,7 +30,8 @@ def build_scene(
     return {
         "source_file": source_file,
         "unit_label": unit_label,
-        "polygon_count": len([p for p in polygons if p.get("status", "active") != "deleted"]),
+        "polygon_count": len([p for p in polygons if is_partition_polygon(p)]),
         "cad_lines": cad_lines,
         "polygons": polygons,
+        "scope_boundary": scope_boundary,
     }

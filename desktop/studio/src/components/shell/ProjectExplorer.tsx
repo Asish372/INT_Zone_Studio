@@ -160,11 +160,12 @@ export function ProjectExplorer() {
           <div className="ml-3 mt-1 space-y-1">
             {(
               [
-                ["cad", "CAD Lines"],
-                ["auto", "Detected Polygons"],
-                ["seed", "Recovered Polygons"],
-                ["deleted", "Deleted"],
-                ["labels", "Polygon Labels"],
+                ["cad", "CAD Drawing"],
+                ["zones", "INT Zones"],
+                ["faces", "Faces (Polygons)"],
+                ["obstacles", "Obstacles"],
+                ["boundary", "Boundary"],
+                ["labels", "Labels"],
               ] as const
             ).map(([key, label]) => (
               <label key={key} className="flex cursor-pointer items-center gap-2">

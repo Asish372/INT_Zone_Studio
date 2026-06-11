@@ -114,8 +114,8 @@ export function BottomConsole() {
   };
 
   return (
-    <div className="bottom-console">
-      <div className="bottom-console-tabs">
+    <div className="bottom-console h-full min-h-0">
+      <div className="bottom-console-tabs shrink-0">
         {TABS.map((tab) => (
           <button
             key={tab}
@@ -127,7 +127,7 @@ export function BottomConsole() {
           </button>
         ))}
       </div>
-      <div className="bottom-console-body">{renderBody()}</div>
+      <div className="bottom-console-body min-h-0 flex-1">{renderBody()}</div>
     </div>
   );
 }

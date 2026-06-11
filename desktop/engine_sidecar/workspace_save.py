@@ -11,9 +11,35 @@ from typing import Any
 from ezdxf import new as new_dxf
 from shapely.geometry import Polygon
 
+from desktop.engine_sidecar.workspace_scope import empty_scope, normalize_scope
+
+
+def is_workspace_active(rec: dict[str, Any]) -> bool:
+    """Active workspace polygon: not deleted and not scope-excluded."""
+    if rec.get("status", "active") == "deleted":
+        return False
+    if rec.get("scope_excluded"):
+        return False
+    return True
+
+
+def is_partition_polygon(rec: dict[str, Any]) -> bool:
+    """Partition geometry: active in workspace and not classified as obstacle."""
+    if not is_workspace_active(rec):
+        return False
+    return rec.get("geometry_role", "partition") != "obstacle"
+
 
 def active_polygons(polygons: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    return [p for p in polygons if p.get("status", "active") != "deleted"]
+    return [p for p in polygons if is_partition_polygon(p)]
+
+
+def obstacle_polygons(polygons: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return [
+        p
+        for p in polygons
+        if is_workspace_active(p) and p.get("geometry_role") == "obstacle"
+    ]
 
 
 def save_polygons_json(
@@ -83,7 +109,7 @@ def save_polygons_csv(polygons: list[dict[str, Any]], output_path: Path | str) -
 
 
 WORKSPACE_FORMAT = "polygon_workspace_project"
-WORKSPACE_VERSION = 2
+WORKSPACE_VERSION = 3
 
 
 def _atomic_write_text(path: Path, content: str) -> None:
@@ -103,12 +129,18 @@ def build_workspace_payload(
     expected_polygon_count: int | None = None,
     project_id: str | None = None,
     zones: list[dict[str, Any]] | None = None,
+    zones_stale: bool = False,
+    zone_pipeline_version: int | None = None,
+    zone_profile: str | None = None,
+    manifest_path: str | None = None,
+    readiness: list[dict[str, str]] | None = None,
     validation: dict[str, Any] | None = None,
     comments: dict[int, list[dict[str, str]]] | None = None,
     markups: list[dict[str, Any]] | None = None,
     unit_label: str = "mm",
     current_user: str = "",
     current_role: str = "engineer",
+    scope: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     return {
         "format": WORKSPACE_FORMAT,
@@ -125,9 +157,15 @@ def build_workspace_payload(
         "current_role": current_role,
         "polygons": polygons,
         "zones": zones or [],
+        "zones_stale": zones_stale,
+        "zone_pipeline_version": zone_pipeline_version,
+        "zone_profile": zone_profile,
+        "manifest_path": manifest_path,
+        "readiness": readiness,
         "validation": validation,
         "comments": {str(k): v for k, v in (comments or {}).items()},
         "markups": markups or [],
+        "scope": normalize_scope(scope) if scope is not None else empty_scope(),
     }
 
 
@@ -150,6 +188,7 @@ def load_workspace_state(path: Path | str) -> dict[str, Any]:
     if version > WORKSPACE_VERSION:
         raise ValueError(f"Unsupported workspace version: {version}")
     data["workspace_path"] = str(file_path)
+    data["scope"] = normalize_scope(data.get("scope"))
     return data
 
 
@@ -213,26 +252,35 @@ def save_zones_dxf(
     zones: list[dict[str, Any]],
     polygons: list[dict[str, Any]],
     output_path: Path | str,
+    config: dict[str, Any],
+    *,
+    source_file: str = "",
 ) -> Path:
+    from src.zone_engine.int_schedule_export import export_int_zones_dxf
+
+    from desktop.engine_sidecar.zone_pipeline_adapter import zone_records_to_int_zone_data
+
+    _ = polygons  # kept for call-site compatibility
     path = Path(output_path)
     path.parent.mkdir(parents=True, exist_ok=True)
+    int_zones = zone_records_to_int_zone_data(zones, source_file=source_file)
     doc = new_dxf("R2010")
-    layer = "INT_ZONES"
-    if layer not in doc.layers:
-        doc.layers.add(layer)
-    msp = doc.modelspace()
-    poly_by_id = {p["id"]: p for p in polygons}
-    for zone in zones:
-        for pid in zone.get("polygon_ids", []):
-            rec = poly_by_id.get(pid)
-            if not rec:
-                continue
-            ring = rec.get("ring") or []
-            if len(ring) < 3:
-                continue
-            msp.add_lwpolyline(ring, close=True, dxfattribs={"layer": layer})
-    doc.saveas(str(path))
-    return path
+    return export_int_zones_dxf(doc, int_zones, path, config)
+
+
+def save_int_schedule_xlsx(
+    zones: list[dict[str, Any]],
+    output_path: Path | str,
+    config: dict[str, Any],
+    *,
+    source_file: str = "",
+) -> Path:
+    from src.zone_engine.int_schedule_export import export_int_schedule_excel
+
+    from desktop.engine_sidecar.zone_pipeline_adapter import zone_records_to_int_zone_data
+
+    int_zones = zone_records_to_int_zone_data(zones, source_file=source_file)
+    return export_int_schedule_excel(int_zones, output_path, config)
 
 
 def save_detection_report_pdf(

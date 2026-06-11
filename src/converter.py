@@ -1,9 +1,11 @@
-"""Convert DWG files to DXF for processing (requires ODA File Converter)."""
+"""Convert DWG files to DXF for processing (ODA File Converter)."""
 
 from __future__ import annotations
 
 import logging
+import os
 import shutil
+import sys
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -16,12 +18,62 @@ ODA_WIN_PATHS = [
 ]
 
 
+def _bundled_oda_candidates() -> list[Path]:
+    candidates: list[Path] = []
+
+    env_path = os.environ.get("INT_ZONE_ODA_PATH")
+    if env_path:
+        candidates.append(Path(env_path))
+
+    if getattr(sys, "frozen", False):
+        exe_dir = Path(sys.executable).resolve().parent
+        install_root = exe_dir.parent.parent
+        candidates.extend(
+            [
+                install_root / "oda" / "ODAFileConverter.exe",
+                exe_dir / "oda" / "ODAFileConverter.exe",
+                exe_dir.parent / "oda" / "ODAFileConverter.exe",
+            ]
+        )
+
+    data_dir = os.environ.get("INT_ZONE_DATA_DIR")
+    if data_dir:
+        candidates.append(Path(data_dir) / "oda" / "ODAFileConverter.exe")
+
+    repo_root = Path(__file__).resolve().parents[1]
+    candidates.append(
+        repo_root
+        / "desktop"
+        / "studio"
+        / "src-tauri"
+        / "resources"
+        / "oda"
+        / "ODAFileConverter.exe"
+    )
+
+    return candidates
+
+
+def _prepare_oda_runtime(oda: Path) -> None:
+    """Ensure ODA DLLs resolve when the converter runs as a subprocess."""
+    oda_dir = str(oda.resolve().parent)
+    os.environ["INT_ZONE_ODA_PATH"] = str(oda)
+    path = os.environ.get("PATH", "")
+    if oda_dir.casefold() not in path.casefold():
+        os.environ["PATH"] = oda_dir + os.pathsep + path
+
+
 def find_oda_converter() -> Path | None:
-    """Locate ODA File Converter executable on Windows."""
+    """Locate ODA File Converter executable (bundled or system install)."""
+    for path in _bundled_oda_candidates():
+        if path.is_file():
+            return path
+
     for path_str in ODA_WIN_PATHS:
         path = Path(path_str)
         if path.is_file():
             return path
+
     found = shutil.which("ODAFileConverter")
     if found:
         return Path(found)
@@ -31,9 +83,7 @@ def find_oda_converter() -> Path | None:
 def dwg_to_dxf(dwg_path: Path, dxf_path: Path) -> Path:
     """
     Convert a DWG file to DXF using ezdxf's ODA File Converter addon.
-
-    Requires ODA File Converter: https://www.opendesign.com/guestfiles/oda_file_converter
-  """
+    """
     if not dwg_path.is_file():
         raise FileNotFoundError(f"DWG file not found: {dwg_path}")
 
@@ -47,13 +97,12 @@ def dwg_to_dxf(dwg_path: Path, dxf_path: Path) -> Path:
 
     oda = find_oda_converter()
     if oda:
+        _prepare_oda_runtime(oda)
         ezdxf.options.set("odafc-addon", "win_exec_path", str(oda))
         logger.info("Using ODA File Converter: %s", oda)
     elif not odafc.is_installed():
         raise RuntimeError(
-            "ODA File Converter is not installed. Download from "
-            "https://www.opendesign.com/guestfiles/oda_file_converter "
-            "or export DWG to DXF manually in AutoCAD."
+            "ODA File Converter was not found. Reinstall INT Zone Studio or export DWG to DXF."
         )
 
     dxf_path.parent.mkdir(parents=True, exist_ok=True)
@@ -63,8 +112,7 @@ def dwg_to_dxf(dwg_path: Path, dxf_path: Path) -> Path:
         doc.saveas(str(dxf_path))
     except odafc.ODAFCNotInstalledError as exc:
         raise RuntimeError(
-            "ODA File Converter not found by ezdxf. Set path in config or install from "
-            "https://www.opendesign.com/guestfiles/oda_file_converter"
+            "ODA File Converter was not found. Reinstall INT Zone Studio or export DWG to DXF."
         ) from exc
     except Exception as exc:
         raise RuntimeError(f"Failed to convert {dwg_path.name} to DXF: {exc}") from exc

@@ -38,14 +38,22 @@ Import Drawing → Automatic Detection → Review → Recovery → Save Project 
 - **Round 1:** 3–5 drawings, 1–2 engineers
 - **Round 2 (if pass):** 10–20 drawings, multiple users
 
-## Primary validation signal
+## Primary validation signal (not detection count)
 
-Suspected Gaps → engineer clicks gap → Recover → useful?
+Suspected Gap → engineer clicked → recovered successfully → useful?
 
 Success quote: *"Gap list ne mujhe directly missing cell tak pahucha diya"*
 
-## Metrics to collect
-
-Detection count, suspected gap count, gap recoveries performed, Save/Open success, export package usage, user confusion points.
-
 Do not optimize detection accuracy in isolation — optimize gap-to-recovery usefulness for real engineers.
+
+## Metrics per drawing
+
+Use `pilot_metrics_template.csv`. Record: drawing name, total polygons detected, suspected gaps found, recoveries attempted/successful, save/reopen/export Y/N, confusion points, time to complete workflow.
+
+## Round 1 exit criteria
+
+0 crashes · 0 data loss · ≥90% save/reopen · ≥90% export · ≥1 useful recovery via gap guidance → Round 2.
+
+## During pilot: note, do not build
+
+Recent Projects, search bar, AI recovery, or any new feature → note feedback only. Pilot objective: Learn, not Build.

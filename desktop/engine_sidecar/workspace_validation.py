@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 from typing import Any
 
-from shapely.geometry import Polygon
+from desktop.engine_sidecar.workspace_save import active_polygons
 
 
 def _ring_to_poly(ring: list) -> Polygon | None:
@@ -27,7 +27,7 @@ def validate_workspace(
     overlap_area_m2: float = 0.1,
 ) -> dict[str, Any]:
     """Run geometry validation on active workspace polygons."""
-    active = [p for p in polygons if p.get("status", "active") != "deleted"]
+    active = active_polygons(polygons)
     issues: list[dict[str, Any]] = []
 
     counts = {

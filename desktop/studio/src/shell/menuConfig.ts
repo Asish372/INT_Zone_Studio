@@ -23,6 +23,7 @@ export interface RibbonItemDef {
   label: string;
   command: StudioCommandId;
   shortcut?: string;
+  toggle?: boolean;
 }
 
 export interface RibbonGroupDef {
@@ -30,13 +31,13 @@ export interface RibbonGroupDef {
   items: RibbonItemDef[];
 }
 
-/** Only tabs with shipped, working commands. */
 export const MENU_TABS: MenuTab[] = [
   "Home",
   "Detection",
   "Review",
   "View",
   "INT Zones",
+  "Help",
 ];
 
 export const MENU_DEFINITIONS: MenuDef[] = [
@@ -46,9 +47,10 @@ export const MENU_DEFINITIONS: MenuDef[] = [
       {
         label: "Project",
         items: [
+          { id: "home-import", label: "Import Drawing", command: "file.importDxf" },
           { id: "home-open", label: "Open Project", command: "file.openProject", shortcut: "Ctrl+O" },
           { id: "home-new", label: "New Project", command: "file.newProject" },
-          { id: "home-save", label: "Save Workspace", command: "file.save", shortcut: "Ctrl+S" },
+          { id: "home-save", label: "Save", command: "file.save", shortcut: "Ctrl+S" },
           { id: "home-save-as", label: "Save Workspace As", command: "file.saveAs" },
           { id: "home-version", label: "Save Version", command: "file.saveVersion" },
           { id: "home-settings", label: "Project Settings", command: "file.projectSettings" },
@@ -67,7 +69,7 @@ export const MENU_DEFINITIONS: MenuDef[] = [
           { id: "home-export", label: "Export", command: "export.open" },
           { id: "home-export-dxf", label: "Export DXF", command: "export.dxf" },
           { id: "home-export-excel", label: "Export Excel", command: "export.excel" },
-          { id: "home-export-pkg", label: "Full Package", command: "export.fullPackage" },
+          { id: "home-export-pkg", label: "Export Package", command: "export.fullPackage" },
         ],
       },
       {
@@ -91,10 +93,21 @@ export const MENU_DEFINITIONS: MenuDef[] = [
         ],
       },
       {
+        label: "Scope",
+        items: [
+          { id: "det-pick-scope", label: "Pick Boundary", command: "detection.pickBoundary", shortcut: "B" },
+          { id: "det-auto-scope", label: "Auto Detect Boundary", command: "detection.autoBoundary" },
+          { id: "det-draw-scope", label: "Draw Boundary", command: "detection.drawSlabBoundary" },
+          { id: "det-edit-scope", label: "Edit Boundary", command: "detection.editBoundary" },
+          { id: "det-apply-scope", label: "Apply Boundary", command: "detection.applyBoundary" },
+        ],
+      },
+      {
         label: "Recovery",
         items: [
           { id: "det-seed", label: "Seed Recovery", command: "detection.seedRecovery", shortcut: "R" },
           { id: "det-recover", label: "Recover Missing Polygon", command: "detection.recoverMissing" },
+          { id: "det-manual", label: "Draw Polygon (Manual)", command: "polygon.drawManual", shortcut: "M" },
         ],
       },
       {
@@ -143,6 +156,13 @@ export const MENU_DEFINITIONS: MenuDef[] = [
           { id: "rev-warnings", label: "Review Warnings", command: "review.warnings" },
         ],
       },
+      {
+        label: "INT Zones",
+        items: [
+          { id: "rev-zones-gen", label: "Generate INT Zones", command: "zones.generate" },
+          { id: "rev-zones-rebuild", label: "Rebuild INT Zones", command: "zones.rebuild" },
+        ],
+      },
     ],
   },
   {
@@ -155,6 +175,17 @@ export const MENU_DEFINITIONS: MenuDef[] = [
           { id: "view-zoom", label: "Zoom Window", command: "view.zoomWindow", shortcut: "Z" },
           { id: "view-fit", label: "Fit View", command: "view.fit", shortcut: "F" },
           { id: "view-goto", label: "Go to Coordinates", command: "view.goToCoordinates" },
+        ],
+      },
+      {
+        label: "Layers",
+        items: [
+          { id: "view-cad", label: "CAD Drawing", command: "view.cadDrawing" },
+          { id: "view-zones", label: "INT Zones", command: "view.intZones" },
+          { id: "view-faces", label: "Faces (Polygons)", command: "view.faces" },
+          { id: "view-obstacles", label: "Obstacles", command: "view.obstacles" },
+          { id: "view-boundary", label: "Boundary", command: "view.boundary" },
+          { id: "view-labels", label: "Labels", command: "view.labels" },
         ],
       },
       {
@@ -224,16 +255,40 @@ export const MENU_DEFINITIONS: MenuDef[] = [
       },
     ],
   },
+  {
+    tab: "Help",
+    groups: [
+      {
+        label: "Pilot",
+        items: [
+          {
+            id: "help-export-feedback",
+            label: "Export Pilot Feedback Template",
+            command: "help.exportPilotFeedback",
+          },
+        ],
+      },
+      {
+        label: "Reference",
+        items: [
+          { id: "help-shortcuts", label: "Keyboard Shortcuts", command: "help.shortcuts" },
+          { id: "help-system", label: "System Info", command: "help.systemInfo" },
+          { id: "help-about", label: "About", command: "help.about" },
+        ],
+      },
+    ],
+  },
 ];
 
 export const RIBBON_BY_TAB: Record<MenuTab, RibbonGroupDef[]> = {
   Home: [
     {
-      label: "File",
+      label: "Project",
       items: [
+        { id: "r-import", label: "Import Drawing", command: "file.importDxf" },
         { id: "r-open", label: "Open Project", command: "file.openProject", shortcut: "O" },
         { id: "r-save", label: "Save", command: "file.save", shortcut: "S" },
-        { id: "r-import", label: "Import DXF", command: "file.importDxf" },
+        { id: "r-export-pkg", label: "Export Package", command: "export.fullPackage" },
         { id: "r-export", label: "Export", command: "export.open" },
       ],
     },
@@ -249,16 +304,27 @@ export const RIBBON_BY_TAB: Record<MenuTab, RibbonGroupDef[]> = {
     {
       label: "Detect",
       items: [
-        { id: "r-run", label: "Run", command: "detection.run", shortcut: "D" },
-        { id: "r-rerun", label: "Re-run", command: "detection.rerun" },
-        { id: "r-all", label: "All", command: "detection.all" },
+        { id: "r-run", label: "Run Detection", command: "detection.run", shortcut: "D" },
+        { id: "r-rerun", label: "Re-run Detection", command: "detection.rerun" },
+        { id: "r-all", label: "Detect All", command: "detection.all" },
+      ],
+    },
+    {
+      label: "Scope",
+      items: [
+        { id: "r-pick-scope", label: "Pick Boundary", command: "detection.pickBoundary", shortcut: "B" },
+        { id: "r-auto-scope", label: "Auto Detect Boundary", command: "detection.autoBoundary" },
+        { id: "r-draw-scope", label: "Draw Boundary", command: "detection.drawSlabBoundary" },
+        { id: "r-edit-scope", label: "Edit Boundary", command: "detection.editBoundary" },
+        { id: "r-apply-scope", label: "Apply Boundary", command: "detection.applyBoundary" },
       ],
     },
     {
       label: "Recover",
       items: [
-        { id: "r-seed", label: "Seed", command: "detection.seedRecovery", shortcut: "R" },
-        { id: "r-missing", label: "Missing", command: "detection.recoverMissing" },
+        { id: "r-seed", label: "Seed Recovery", command: "detection.seedRecovery", shortcut: "R" },
+        { id: "r-missing", label: "Recover Missing", command: "detection.recoverMissing" },
+        { id: "r-manual", label: "Draw Polygon (Manual)", command: "polygon.drawManual", shortcut: "M" },
       ],
     },
     {
@@ -273,8 +339,8 @@ export const RIBBON_BY_TAB: Record<MenuTab, RibbonGroupDef[]> = {
       label: "Select",
       items: [
         { id: "r-select", label: "Select", command: "tool.select", shortcut: "S" },
-        { id: "r-rect", label: "Rect", command: "tool.rectSelect" },
-        { id: "r-find", label: "Find", command: "polygon.find" },
+        { id: "r-rect", label: "Rect Select", command: "tool.rectSelect" },
+        { id: "r-find", label: "Find Polygon", command: "polygon.find" },
       ],
     },
     {
@@ -282,33 +348,52 @@ export const RIBBON_BY_TAB: Record<MenuTab, RibbonGroupDef[]> = {
       items: [
         { id: "r-approve", label: "Approve", command: "polygon.approve" },
         { id: "r-reject", label: "Reject", command: "polygon.reject" },
-        { id: "r-needs", label: "Review", command: "polygon.needsReview" },
+        { id: "r-needs", label: "Needs Review", command: "polygon.needsReview" },
+        { id: "r-delete", label: "Delete", command: "polygon.delete" },
       ],
     },
     {
       label: "Mode",
       items: [
-        { id: "r-rev-mode", label: "Review Mode", command: "review.mode" },
-        { id: "r-overlay", label: "Overlay", command: "review.overlay" },
+        { id: "r-rev-mode", label: "Review Mode", command: "review.mode", toggle: true },
+        { id: "r-overlay", label: "Overlay", command: "review.overlay", toggle: true },
+      ],
+    },
+    {
+      label: "INT Zones",
+      items: [
+        { id: "r-zone-gen", label: "Generate Zones", command: "zones.generate" },
+        { id: "r-zone-rebuild", label: "Rebuild Zones", command: "zones.rebuild" },
       ],
     },
   ],
   View: [
     {
-      label: "Zoom",
+      label: "Navigate",
       items: [
-        { id: "r-zoom", label: "Zoom", command: "view.zoomWindow", shortcut: "Z" },
-        { id: "r-fit", label: "Fit", command: "view.fit", shortcut: "F" },
         { id: "r-pan", label: "Pan", command: "view.pan", shortcut: "P" },
+        { id: "r-zoom", label: "Zoom Window", command: "view.zoomWindow", shortcut: "Z" },
+        { id: "r-fit", label: "Fit View", command: "view.fit", shortcut: "F" },
       ],
     },
     {
       label: "Layers",
       items: [
-        { id: "r-layers", label: "Layers", command: "panel.toggle.layers" },
-        { id: "r-ids-selected", label: "Selected IDs", command: "view.polygonIds.selected" },
-        { id: "r-ids-visible", label: "Visible IDs", command: "view.polygonIds.visible" },
-        { id: "r-ids-all", label: "All IDs", command: "view.polygonIds.all" },
+        { id: "r-cad", label: "CAD Drawing", command: "view.cadDrawing", toggle: true },
+        { id: "r-zones", label: "INT Zones", command: "view.intZones", toggle: true },
+        { id: "r-faces", label: "Faces", command: "view.faces", toggle: true },
+        { id: "r-obstacles", label: "Obstacles", command: "view.obstacles", toggle: true },
+        { id: "r-boundary", label: "Boundary", command: "view.boundary", toggle: true },
+        { id: "r-labels", label: "Labels", command: "view.labels", toggle: true },
+        { id: "r-layer-mgr", label: "Layer Manager", command: "panel.toggle.layers" },
+      ],
+    },
+    {
+      label: "IDs",
+      items: [
+        { id: "r-ids-selected", label: "Selected IDs", command: "view.polygonIds.selected", toggle: true },
+        { id: "r-ids-visible", label: "Visible IDs", command: "view.polygonIds.visible", toggle: true },
+        { id: "r-ids-all", label: "All IDs", command: "view.polygonIds.all", toggle: true },
       ],
     },
     {
@@ -323,8 +408,8 @@ export const RIBBON_BY_TAB: Record<MenuTab, RibbonGroupDef[]> = {
     {
       label: "Generate",
       items: [
-        { id: "r-zone-gen", label: "Generate", command: "zones.generate" },
-        { id: "r-zone-rebuild", label: "Rebuild", command: "zones.rebuild" },
+        { id: "r-zone-gen-tab", label: "Generate", command: "zones.generate" },
+        { id: "r-zone-rebuild-tab", label: "Rebuild", command: "zones.rebuild" },
       ],
     },
     {
@@ -334,4 +419,5 @@ export const RIBBON_BY_TAB: Record<MenuTab, RibbonGroupDef[]> = {
       ],
     },
   ],
+  Help: [],
 };

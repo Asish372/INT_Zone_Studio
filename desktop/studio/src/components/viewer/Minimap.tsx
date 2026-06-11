@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { Bounds, SceneData } from "../../types";
 import { CANVAS_COLORS } from "../../viewer/canvasColors";
+import { isActiveWorkspacePolygon } from "../../viewer/geometry";
 
 interface Camera {
   scale: number;
@@ -54,7 +55,7 @@ export function Minimap({
     ctx.strokeStyle = CANVAS_COLORS.polygonAuto;
     ctx.lineWidth = 0.6;
     for (const poly of scene.polygons ?? []) {
-      if (poly.status === "deleted") continue;
+      if (!isActiveWorkspacePolygon(poly)) continue;
       const ring = poly.ring ?? [];
       if (ring.length < 2) continue;
       ctx.beginPath();

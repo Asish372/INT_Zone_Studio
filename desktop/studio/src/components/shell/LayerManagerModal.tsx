@@ -9,18 +9,19 @@ export function LayerManagerModal() {
   if (!open) return null;
 
   const rows = [
-    { key: "cad" as const, name: "CAD Lines", color: "#605e5c" },
-    { key: "auto" as const, name: "Detected Polygons", color: "#06b6d4" },
-    { key: "seed" as const, name: "Recovered Polygons", color: "#22c55e" },
-    { key: "deleted" as const, name: "Deleted", color: "#ef4444" },
-    { key: "labels" as const, name: "Polygon Labels", color: "#ffffff" },
+    { key: "cad" as const, name: "CAD Drawing", color: "#605e5c" },
+    { key: "zones" as const, name: "INT Zones", color: "#06b6d4" },
+    { key: "faces" as const, name: "Faces (Polygons)", color: "#06b6d4" },
+    { key: "obstacles" as const, name: "Obstacles", color: "#f97316" },
+    { key: "boundary" as const, name: "Boundary", color: "#a855f7" },
+    { key: "labels" as const, name: "Labels", color: "#ffffff" },
   ];
 
   return (
     <div className="modal-overlay">
       <div className="modal-card max-w-md">
         <header className="modal-header">
-          <h2 className="text-lg font-semibold">Layer Manager</h2>
+          <h2 className="text-lg font-semibold">Layer Visibility</h2>
           <button
             type="button"
             className="text-xl"
@@ -35,7 +36,6 @@ export function LayerManagerModal() {
               <th className="p-2 text-left">Visible</th>
               <th className="p-2 text-left">Layer</th>
               <th className="p-2 text-left">Color</th>
-              <th className="p-2 text-left">Linetype</th>
             </tr>
           </thead>
           <tbody>
@@ -55,7 +55,6 @@ export function LayerManagerModal() {
                     style={{ background: row.color }}
                   />
                 </td>
-                <td className="p-2 text-[var(--text-muted)]">Continuous</td>
               </tr>
             ))}
           </tbody>

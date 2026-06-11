@@ -5,7 +5,8 @@ export type MenuTab =
   | "Detection"
   | "Review"
   | "View"
-  | "INT Zones";
+  | "INT Zones"
+  | "Help";
 
 export type PanelId =
   | "explorer"
@@ -64,6 +65,11 @@ export type StudioCommandId =
   | "view.areas"
   | "view.vertices"
   | "view.labels"
+  | "view.cadDrawing"
+  | "view.intZones"
+  | "view.faces"
+  | "view.obstacles"
+  | "view.boundary"
   | "view.goToCoordinates"
   | "view.theme.dark"
   | "view.theme.light"
@@ -80,8 +86,15 @@ export type StudioCommandId =
   | "detection.rerun"
   | "detection.selection"
   | "detection.all"
+  | "detection.defineSlabBoundary"
+  | "detection.pickBoundary"
+  | "detection.autoBoundary"
+  | "detection.drawSlabBoundary"
+  | "detection.editBoundary"
+  | "detection.applyBoundary"
   | "detection.seedRecovery"
   | "detection.recoverMissing"
+  | "polygon.drawManual"
   | "detection.bulkRecovery"
   | "detection.openBoundaries"
   | "detection.unclosed"
@@ -167,7 +180,8 @@ export type StudioCommandId =
   | "help.logs"
   | "help.debugReport"
   | "help.support"
-  | "help.about";
+  | "help.about"
+  | "help.exportPilotFeedback";
 
 export interface PanelVisibility {
   explorer: boolean;
@@ -204,8 +218,62 @@ export type ToolName =
   | "select"
   | "rect-select"
   | "add"
+  | "scope-pick"
+  | "scope-auto"
+  | "scope-draw"
+  | "scope-edit"
+  | "manual-draw"
   | "pan"
   | "zoom-window";
+
+export interface CadBoundaryCandidate {
+  ring: [number, number][];
+  layer: string;
+  entity_handle: string;
+  entity_type: string;
+  area_m2: number;
+}
+
+export type SlabBoundarySource = "drawn" | "cad_pick" | "auto_layer";
+
+export interface SlabBoundary {
+  ring: [number, number][];
+  area_m2: number;
+  perimeter_m: number;
+  centroid: [number, number];
+  source: SlabBoundarySource;
+  defined_at?: string;
+  defined_by?: string;
+  cad_ref?: {
+    layer: string;
+    entity_handle: string;
+    entity_type: string;
+  };
+  auto_layer?: string;
+}
+
+export interface ObstacleFootprint {
+  ring: [number, number][];
+  area_m2?: number;
+  centroid?: [number, number];
+  layer?: string;
+  block_name?: string;
+  source?: string;
+}
+
+export interface WorkspaceScopeObstacles {
+  footprints?: ObstacleFootprint[];
+  classified_count?: number;
+  appended_count?: number;
+  footprint_count?: number;
+}
+
+export interface WorkspaceScope {
+  boundary: SlabBoundary | null;
+  detection_scoped?: boolean;
+  boundary_stale?: boolean;
+  obstacles?: WorkspaceScopeObstacles | null;
+}
 
 export type ReviewStatus =
   | "pending"
@@ -219,6 +287,7 @@ export type PolygonFilter =
   | "all"
   | "auto"
   | "recovered"
+  | "manual"
   | "deleted"
   | "large"
   | "small"
@@ -228,7 +297,7 @@ export type PolygonFilter =
 
 export interface PolygonRecord {
   id: number;
-  source: "auto" | "seed" | string;
+  source: "auto" | "seed" | "manual" | string;
   status: string;
   review_status?: string;
   layer?: string;
@@ -238,18 +307,26 @@ export interface PolygonRecord {
   centroid: [number, number];
   created_by?: string;
   int_zone?: string | null;
+  scope_excluded?: boolean;
+  geometry_role?: "partition" | "obstacle";
+  obstacle_source?: string;
+  obstacle_layer?: string;
 }
 
 export interface SceneData {
   cad_lines: [number, number, number, number][];
   polygons: PolygonRecord[];
   unit_label?: string;
+  scope_boundary?: SlabBoundary | null;
 }
 
 export interface Counts {
   detected: number;
   seed_added: number;
+  manual_added?: number;
   deleted: number;
+  scope_excluded?: number;
+  obstacles?: number;
   total: number;
 }
 
@@ -275,6 +352,8 @@ export interface Summary {
   project_id?: string | null;
   workspace_save_path?: string | null;
   cad_available?: boolean;
+  scope?: WorkspaceScope;
+  scope_enabled?: boolean;
   actions: ActionEntry[];
 }
 
@@ -323,9 +402,10 @@ export interface SeedPreview {
 
 export interface LayerVisibility {
   cad: boolean;
-  auto: boolean;
-  seed: boolean;
-  deleted: boolean;
+  zones: boolean;
+  faces: boolean;
+  obstacles: boolean;
+  boundary: boolean;
   labels: boolean;
 }
 

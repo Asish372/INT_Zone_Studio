@@ -1,0 +1,6 @@
+slot,drawing_name,source_path,consultant,slab_type,status,notes
+1,6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dxf,output/.dxf_cache/6276.S111-WAREHOUSE SLAB PLAN-Rev_F.dxf,warehouse,warehouse slab,ready,618 polygons — founder dry-run drawing
+2,TBD — drawing 2,,,TBD,pending,Collect real consultant DWG/DXF — different slab type
+3,TBD — drawing 3,,,TBD,pending,Collect real consultant DWG/DXF — medium complexity
+4,TBD — drawing 4,,,TBD,pending,Collect real consultant DWG/DXF — optional edge case
+5,TBD — drawing 5,,,TBD,pending,Collect real consultant DWG/DXF — optional second consultant
