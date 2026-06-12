@@ -135,6 +135,23 @@ def _dxf_cache_dir() -> Path:
     return PROJECT_ROOT / "output" / ".dxf_cache"
 
 
+def _allowed_path_roots() -> list[Path]:
+    """Roots that user-supplied filesystem paths may resolve into."""
+    return [PROJECT_ROOT.resolve(), BUNDLE_ROOT.resolve(), Path.home().resolve()]
+
+
+def _path_within_allowed_roots(path: Path) -> bool:
+    """Reject user-supplied paths that escape the project, bundle, or home dirs."""
+    try:
+        resolved = path.expanduser().resolve()
+    except OSError:
+        return False
+    return any(
+        resolved == root or resolved.is_relative_to(root)
+        for root in _allowed_path_roots()
+    )
+
+
 def _load_config() -> dict[str, Any]:
     with _config_path().open(encoding="utf-8") as fh:
         return yaml.safe_load(fh) or {}
@@ -262,9 +279,19 @@ def _resolve_seed(session: WorkspaceSession, x: float, y: float):
 
 
 app = FastAPI(title="INT Zone Studio Engine", version="0.3.0")
+
+# Only the Tauri shell and the Vite dev server may call this local API.
+# A wildcard here would let any website drive the engine from the browser.
+ALLOWED_ORIGINS = [
+    "tauri://localhost",
+    "https://tauri.localhost",
+    "http://tauri.localhost",
+    "http://localhost:1420",
+    "http://127.0.0.1:1420",
+]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -1291,6 +1318,11 @@ async def save_workspace_state_endpoint(
     save_path = Path(body.path.strip())
     if save_path.suffix.lower() not in {".pjson", ".json"}:
         save_path = save_path.with_suffix(".pjson")
+    if not _path_within_allowed_roots(save_path):
+        raise HTTPException(
+            status_code=403,
+            detail="Save path is outside the allowed locations",
+        )
     payload = build_workspace_payload(
         polygons=session.polygons,
         source_file=session.source_file,
@@ -1380,6 +1412,8 @@ async def open_folder(body: OpenFolderRequest) -> dict[str, Any]:
         folder = folder.parent
     if not folder.is_dir():
         raise HTTPException(status_code=404, detail=f"Folder not found: {folder}")
+    if not _path_within_allowed_roots(folder):
+        raise HTTPException(status_code=403, detail="Folder is outside the allowed locations")
     resolved = str(folder.resolve())
     try:
         if sys.platform == "win32":
