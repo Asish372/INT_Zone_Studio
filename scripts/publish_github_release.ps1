@@ -1,5 +1,5 @@
 # Publish INT Zone Studio pilot release to GitHub.
-# Prerequisites: gh auth login, installer staged in release/
+# Prerequisites: gh auth login, installer in release/, PDF in docs/
 param(
     [string]$Version = "0.1.0-pilot.1",
     [string]$Tag = "v0.1.0-pilot.1"
@@ -10,6 +10,9 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $releaseDir = Join-Path $repoRoot "release"
 $installerName = "INT Zone Studio Standalone Setup $Version.exe"
 $installerPath = Join-Path $releaseDir $installerName
+$pdfSource = Join-Path $repoRoot "docs\INT_Zone_Studio_User_Guide.pdf"
+$pdfReleaseName = "INT_Zone_Studio_User_Guide.pdf"
+$pdfReleasePath = Join-Path $releaseDir $pdfReleaseName
 
 if (-not (Test-Path $installerPath)) {
     Write-Host "Installer not found. Staging from Tauri build..."
@@ -20,21 +23,34 @@ if (-not (Test-Path $installerPath)) {
     throw "Missing installer: $installerPath`nRun: cd desktop/studio && npm run tauri:build"
 }
 
+if (-not (Test-Path $pdfSource)) {
+    throw "Missing user guide PDF: $pdfSource"
+}
+
+Copy-Item $pdfSource $pdfReleasePath -Force
+
 $notesFile = Join-Path $repoRoot ".github\release_template.md"
-$checksum = (Get-FileHash $installerPath -Algorithm SHA256).Hash
 $checksumFile = Join-Path $releaseDir "SHA256SUMS.txt"
-@(
-    "$checksum  $installerName"
-) | Set-Content $checksumFile -Encoding UTF8
+$installerHash = (Get-FileHash $installerPath -Algorithm SHA256).Hash
+$pdfHash = (Get-FileHash $pdfReleasePath -Algorithm SHA256).Hash
+$lines = @(
+    "$installerHash  $installerName",
+    "$pdfHash  $pdfReleaseName"
+)
+$lines | Set-Content $checksumFile -Encoding UTF8
 
 Write-Host "Publishing $Tag to GitHub..."
+Write-Host "  Installer: $installerPath"
+Write-Host "  User guide: $pdfReleasePath"
+
 gh release view $Tag 2>$null
 if ($LASTEXITCODE -eq 0) {
-    gh release upload $Tag $installerPath $checksumFile --clobber
+    gh release upload $Tag $installerPath $pdfReleasePath $checksumFile --clobber
     Write-Host "Updated existing release assets."
 } else {
     gh release create $Tag `
         $installerPath `
+        $pdfReleasePath `
         $checksumFile `
         --title "INT Zone Studio · Pilot Evaluation Build v1 ($Version)" `
         --notes-file $notesFile `
