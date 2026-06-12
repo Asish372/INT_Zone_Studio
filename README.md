@@ -8,7 +8,7 @@
 
 <sub>
 
-[![Release](https://img.shields.io/github/v/release/Asish372/INT_Zone_Studio?label=Pilot%20v1&style=for-the-badge&color=0969da)](https://github.com/Asish372/INT_Zone_Studio/releases/latest)
+[![Release](https://img.shields.io/badge/Pilot%20v1-0.1.0--pilot.1-0969da?style=for-the-badge)](https://gitlab.com/asishpapu372-group/INT_Zone_Studio/-/releases)
 [![License](https://img.shields.io/badge/license-MIT-24292f?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-0078d4?style=for-the-badge&logo=windows&logoColor=white)](docs/manual/INSTALLATION.md)
 [![Python](https://img.shields.io/badge/engine-Python%203.10+-3776ab?style=for-the-badge&logo=python&logoColor=white)](CONTRIBUTING.md)
@@ -17,11 +17,11 @@
 
 <br />
 
-[**Download**](https://github.com/Asish372/INT_Zone_Studio/releases/latest) ·
+[**Download**](https://gitlab.com/asishpapu372-group/INT_Zone_Studio/-/releases) ·
 [**User Guide**](docs/manual/USER_GUIDE.md) ·
 [**Installation**](docs/manual/INSTALLATION.md) ·
 [**Changelog**](CHANGELOG.md) ·
-[**Report Issue**](https://github.com/Asish372/INT_Zone_Studio/issues)
+[**Report Issue**](https://gitlab.com/asishpapu372-group/INT_Zone_Studio/-/issues/new)
 
 <br />
 
@@ -42,7 +42,7 @@ Current line: **Pilot Evaluation Build v1** (`0.1.0-pilot.1`) — field validati
 | | |
 |---|---|
 | **Author** | [Asish Bindhani](https://www.linkedin.com/in/asish372) |
-| **Repository** | [github.com/Asish372/INT_Zone_Studio](https://github.com/Asish372/INT_Zone_Studio) |
+| **Repository** | [gitlab.com/asishpapu372-group/INT_Zone_Studio](https://gitlab.com/asishpapu372-group/INT_Zone_Studio) |
 | **Pilot scope** | [PILOT_V1.md](PILOT_V1.md) |
 
 ---
@@ -52,10 +52,10 @@ Current line: **Pilot Evaluation Build v1** (`0.1.0-pilot.1`) — field validati
 | Asset | Version | Platform |
 |-------|---------|----------|
 | **INT Zone Studio Standalone Setup** | `0.1.0-pilot.1` | Windows 10/11 x64 |
-| **Release notes** | [v0.1.0-pilot.1](RELEASE_NOTES_PILOT_V1.md) | — |
+| **Release notes** | [v0.1.0-pilot.1](CHANGELOG.md) | — |
 | **Changelog** | [CHANGELOG.md](CHANGELOG.md) | All versions |
 
-➡️ **[Get the latest installer from Releases](https://github.com/Asish372/INT_Zone_Studio/releases/latest)**
+➡️ **[Get the latest installer from Releases](https://gitlab.com/asishpapu372-group/INT_Zone_Studio/-/releases)**
 
 After install: Start Menu → **INT Zone Studio**. No Python or terminal required.
 
@@ -83,7 +83,7 @@ After install: Start Menu → **INT Zone Studio**. No Python or terminal require
 | [Installation](docs/manual/INSTALLATION.md) | System requirements, installer, first run |
 | [User Guide](docs/manual/USER_GUIDE.md) | Full pilot workflow step-by-step |
 | [FAQ & troubleshooting](docs/manual/FAQ.md) | Common issues and fixes |
-| [Release notes (v1)](RELEASE_NOTES_PILOT_V1.md) | What ships in pilot v1 |
+| [Release notes (v1)](CHANGELOG.md) | What ships in pilot v1 |
 | [Pilot program](PILOT_V1.md) | Scope, metrics, exit criteria |
 | [Contributing](CONTRIBUTING.md) | Dev setup and PR guidelines |
 
@@ -184,7 +184,7 @@ Evaluating this build? Use:
 
 - [`pilot_metrics_template.csv`](pilot_metrics_template.csv) — per-drawing metrics
 - [`PILOT_FEEDBACK.md`](PILOT_FEEDBACK.md) — qualitative notes
-- [GitHub Issues](https://github.com/Asish372/INT_Zone_Studio/issues) — bugs with sanitized drawings
+- [GitLab Issues](https://gitlab.com/asishpapu372-group/INT_Zone_Studio/-/issues) — bugs with sanitized drawings
 
 ---
 
