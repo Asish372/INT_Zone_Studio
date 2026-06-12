@@ -20,6 +20,8 @@ Produces:
 release/INT Zone Studio Standalone Setup 0.1.0-pilot.1.exe
 ```
 
+User guide PDF lives at `docs/INT_Zone_Studio_User_Guide.pdf` (also attached to GitHub Releases).
+
 ## Publish to GitHub
 
 ```powershell

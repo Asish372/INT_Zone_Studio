@@ -8,6 +8,8 @@
 | File | Description |
 |------|-------------|
 | `INT Zone Studio Standalone Setup 0.1.0-pilot.1.exe` | Recommended — bundled engine, no Python required |
+| `INT_Zone_Studio_User_Guide.pdf` | Complete user manual (install, UI, workflow, export) |
+| `SHA256SUMS.txt` | SHA256 checksums for all release files |
 
 ### Install
 
@@ -30,7 +32,8 @@ Import → Detection → Review → Recovery → Save → Reopen → Export
 
 ### Documentation
 
-- [User Guide](https://github.com/Asish372/INT_Zone_Studio/blob/main/docs/manual/USER_GUIDE.md)
+- **[User Guide (PDF)](https://github.com/Asish372/INT_Zone_Studio/blob/main/docs/INT_Zone_Studio_User_Guide.pdf)** — complete manual
+- [User Guide (web)](https://github.com/Asish372/INT_Zone_Studio/blob/main/docs/manual/USER_GUIDE.md)
 - [FAQ](https://github.com/Asish372/INT_Zone_Studio/blob/main/docs/manual/FAQ.md)
 - [Full release notes](https://github.com/Asish372/INT_Zone_Studio/blob/main/RELEASE_NOTES_PILOT_V1.md)
 - [Changelog](https://github.com/Asish372/INT_Zone_Studio/blob/main/CHANGELOG.md)

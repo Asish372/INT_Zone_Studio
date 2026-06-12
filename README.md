@@ -18,7 +18,7 @@
 <br />
 
 [**Download**](https://github.com/Asish372/INT_Zone_Studio/releases/latest) ·
-[**User Guide**](docs/manual/USER_GUIDE.md) ·
+[**User Guide (PDF)**](docs/INT_Zone_Studio_User_Guide.pdf) ·
 [**Installation**](docs/manual/INSTALLATION.md) ·
 [**Changelog**](CHANGELOG.md) ·
 [**Report Issue**](https://github.com/Asish372/INT_Zone_Studio/issues)
@@ -52,6 +52,7 @@ Current line: **Pilot Evaluation Build v1** (`0.1.0-pilot.1`) — field validati
 | Asset | Version | Platform |
 |-------|---------|----------|
 | **INT Zone Studio Standalone Setup** | `0.1.0-pilot.1` | Windows 10/11 x64 |
+| **[User Guide (PDF)](docs/INT_Zone_Studio_User_Guide.pdf)** | `0.1.0-pilot.1` | All users |
 | **Release notes** | [v0.1.0-pilot.1](RELEASE_NOTES_PILOT_V1.md) | — |
 | **Changelog** | [CHANGELOG.md](CHANGELOG.md) | All versions |
 
@@ -80,8 +81,8 @@ After install: Start Menu → **INT Zone Studio**. No Python or terminal require
 
 | Manual | Description |
 |--------|-------------|
+| **[User Guide (PDF)](docs/INT_Zone_Studio_User_Guide.pdf)** | Complete printable manual — recommended for engineers |
 | [Installation](docs/manual/INSTALLATION.md) | System requirements, installer, first run |
-| [User Guide](docs/manual/USER_GUIDE.md) | Full pilot workflow step-by-step |
 | [FAQ & troubleshooting](docs/manual/FAQ.md) | Common issues and fixes |
 | [Release notes (v1)](RELEASE_NOTES_PILOT_V1.md) | What ships in pilot v1 |
 | [Pilot program](PILOT_V1.md) | Scope, metrics, exit criteria |
