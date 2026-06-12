@@ -1,0 +1,26 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  script:
+    - echo "Building..."
+
+unit-test-job:
+  stage: test
+  script:
+    - echo "Running tests..."
+
+lint-test-job:
+  stage: test
+  script:
+    - echo "Linting code..."
+    - sleep 10
+    - echo "No lint issues found."
+
+deploy-job:
+  stage: deploy
+  script:
+    - echo "Deploying..."
